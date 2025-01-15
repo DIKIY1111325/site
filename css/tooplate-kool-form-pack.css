@@ -592,5 +592,13 @@ strong {
     }
     .countdown-item {
         margin: 10px;
+    }@media screen and (max-width: 480px) {
+    .hero-section {
+        padding-top: 20px; /* Уменьшение верхнего отступа */
     }
+    .site-header {
+        margin-bottom: 0; /* Уменьшение нижнего отступа */
+    }
+}
+  
 }
