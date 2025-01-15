@@ -1,13 +1,8 @@
 /*
-
 Tooplate 2136 Персональный VPN Сервер
-
 https://www.tooplate.com/view/2136-kool-form-pack
-
 Bootstrap 5 Form Pack Template
-
 */
-
 
 /*---------------------------------------
   CUSTOM PROPERTIES ( VARIABLES )             
@@ -47,7 +42,6 @@ body {
     background-color: var(--body-bg-color);
     font-family: var(--body-font-family);
 }
-
 
 /*---------------------------------------
   TYPOGRAPHY               
@@ -123,7 +117,6 @@ strong {
     font-weight: var(--font-weight-bold);
 }
 
-
 /*---------------------------------------
   SECTION               
 -----------------------------------------*/
@@ -148,9 +141,8 @@ strong {
 }
 
 .page-404-title+h3 {
-    color: var(--secondary-color);
+    color: var (--secondary-color);
 }
-
 
 /*---------------------------------------
   CUSTOM BUTTON               
@@ -198,7 +190,6 @@ strong {
 .custom-btn-group .link:hover {
     color: var(--link-hover-color);
 }
-
 
 /*---------------------------------------
   SITE HEADER        
@@ -284,7 +275,6 @@ strong {
     color: var(--link-hover-color);
 }
 
-
 /*---------------------------------------
   HERO        
 -----------------------------------------*/
@@ -358,7 +348,6 @@ strong {
     color: var(--white-color);
 }
 
-
 /*---------------------------------------
   COUNTDOWN              
 -----------------------------------------*/
@@ -382,7 +371,6 @@ strong {
     font-size: var(--p-font-size);
     font-style: italic;
 }
-
 
 /*---------------------------------------
   MODAL EMAIL FORM        
@@ -455,7 +443,6 @@ strong {
     font-size: var(--btn-font-size);
 }
 
-
 /*---------------------------------------
   CUSTOM FORM               
 -----------------------------------------*/
@@ -509,7 +496,7 @@ strong {
 }
 
 .contact-form .form-floating>textarea {
-    border-radius: var(--border-radius-medium);
+    border-radius: var (--border-radius-medium);
     height: 110px;
 }
 
@@ -518,7 +505,6 @@ strong {
     padding: 10.25px 35px;
     font-size: var(--p-font-size);
 }
-
 
 /*---------------------------------------
   SOCIAL ICON               
@@ -552,7 +538,6 @@ strong {
     background: var(--primary-color);
     color: var(--white-color);
 }
-
 
 /*---------------------------------------
   RESPONSIVE STYLES               
@@ -599,23 +584,22 @@ strong {
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
-  #section_2 {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-  #section_2 .text-content {
-    animation: fadeInUp 1s ease-in-out;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translate3d(0, 100%, 0);
+    #section_2 {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
-    to {
-        opacity: 1;
-        transform: translate3d(0, 0, 0);
+    #section_2 .text-content {
+        animation: fadeInUp 1s ease-in-out;
     }
-}
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translate3d(0, 100%, 0);
+        }
+        to {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
+    }
 }
