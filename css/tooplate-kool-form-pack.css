@@ -619,3 +619,11 @@ strong {
         padding-top: 0;
     }
 }
+
+
+/* Добавленные стили для увеличения кнопки */
+
+.custom-form .form-control.large-button {
+    padding: 10px 8px;
+    font-size: 15px;
+}
