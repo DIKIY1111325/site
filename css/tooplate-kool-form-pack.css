@@ -584,6 +584,17 @@ strong {
 }
 
 @media screen and (max-width: 480px) {
+    .site-header {
+        position: relative;
+        z-index: 10;
+        padding: 10px 15px;
+    }
+    body {
+        padding-top: 60px;
+    }
+    .hero-section {
+        padding-top: 20px;
+    }
     .site-header .social-icon {
         display: none !important;
     }
@@ -592,13 +603,19 @@ strong {
     }
     .countdown-item {
         margin: 10px;
-    }@media screen and (max-width: 480px) {
-    .hero-section {
-        padding-top: 20px; /* Уменьшение верхнего отступа */
-    }
-    .site-header {
-        margin-bottom: 0; /* Уменьшение нижнего отступа */
     }
 }
-  
+
+.selector-with-text {
+    font-size: 30px;
+}
+
+.site-header-text-small {
+    /* Ваши стили здесь */
+}
+
+@media (max-width: 767px) {
+    body {
+        padding-top: 0;
+    }
 }
