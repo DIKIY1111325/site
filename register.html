@@ -44,11 +44,11 @@ Bootstrap 5 Form Pack Template
                     <span>ИСПОЛЬЗУЙТЕ VPN БЕСПЛАТНО</span>
                 </a>
                 <div class="share-text">
-                    <span>поделившись с друзьями</span>
-                    <span>ссылкой на проект</span>
+                    <span>ПОДЕЛИТЕСЬ ССЫЛКОЙ НА ПРОЕКТ НАЖАВ НА ИКОНКУ МЕССЕНДЖЕРА</span>
+                    <!-- <span> нажав на иконку мессенджера</span> -->
                 </div>
-                <a href="#" class="custom-btn custom-border-btn" data-bs-toggle="modal" data-bs-target="#subscribeModal">ПРОДЛЯЙТЕ БЕСПЛАТНЫЙ ПЕРИОД</a>
-                <a class="bi-list offcanvas-icon" data-bs-toggle="offcanvas" href="#offcanvasMenu" role="button" aria-controls="offcanvasMenu"></a>
+                <!-- <a href="#" class="custom-btn custom-border-btn" data-bs-toggle="modal" data-bs-target="#subscribeModal">АВТОРИЗУЙТЕСЬ
+                <a class="bi-list offcanvas-icon" data-bs-toggle="offcanvas" href="#offcanvasMenu" role="button" aria-controls="offcanvasMenu"></a> -->
             </div>
         </header>
 
@@ -97,12 +97,12 @@ Bootstrap 5 Form Pack Template
 
                     <div class="modal-body">
                         <form action="#" method="get" class="custom-form mt-lg-4 mt-2" role="form">
-                            <h2 class="modal-title" id="subscribeModalLabel">ранее вводимые данные</h2>
+                            <h2 class="modal-title" id="subscribeModalLabel">ваш № или @</h2>
 
                             <input type="email" name="email" id="email" pattern="[^ @]*@[^ @]*" class="form-control" placeholder="№ Телефона или Email" required="">
 
-                            <button type="submit" class="form-control">войти</button>
-                        </form>
+                            <button type="submit" class="form-control">сбросить пароль</button>
+                        </form>`
                     </div>
 
                     <div class="modal-footer justify-content-center">
@@ -119,35 +119,37 @@ Bootstrap 5 Form Pack Template
 
                     <div class="col-lg-6 col-12 mx-auto">
 
-
-
-
-
-
-                        <div class="social-icons-container">
-                            <ul class="social-icons">
-                                <li>
-                                    <a href="#" class="bi-instagram"></a>
-                                </li>
-                                <li>
-                                    <a href="#" class="bi-telegram"></a>
-                                </li>
-                                <li>
-                                    <a href="#" class="bi-whatsapp"></a>
-                                </li>
-                            </ul>
-                        </div>
-                        <p class="text-white m-0 me-4">ПОЛУЧИТЕ НАСТРОЙКИ VPN НА ТЕСТОВЫЙ ПЕРИОД</p>
+                        <p class="text-white m-0 me-4">.</p>
                         <form class="custom-form" role="form" method="post">
+
+
+
+
+                            <div class="social-icons-container">
+                                <ul class="social-icons">
+                                    <li>
+                                        <a href="#" class="bi-whatsapp"></a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="bi-telegram"></a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="bi-instagram"></a>
+                                    </li>
+                                </ul>
+                            </div>
+
                             <!--                                 <h2 class="hero-title text-center mb-4 pb-2">ТЕСТ VPN БЕСПЛАТНО</h2> -->
 
                             <div class="form-floating mt-4">
                                 <input type="text" name="full-name" id="full-name" class="form-control" placeholder="Full Name" required>
                                 <label for="full-name">Ваше имя</label>
+
                             </div>
                             <div class="form-floating mt-3">
-                                <input type="email" name="email" id="email-register" class="form-control" placeholder="Email address" required>
+                                <input type="email" name="email" id="email-register" class="form-control" placeholder="№ Телефона или Email" required>
                                 <label for="email-register">Ваш № Телефона или Email</label>
+
                             </div>
                             <div class="form-floating mt-3">
                                 <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
@@ -159,8 +161,8 @@ Bootstrap 5 Form Pack Template
                                     Я согласен с условиями использования.
                                 </label>
                             </div>
-                            <button type="submit" class="form-control mt-4">НАСТРОЙКИ ДЛЯ ПОДКЛЮЧЕНИЯ VPN</button>
-                            <p class="mt-3">забыли пароль нажмите: <a href="password-reset.html">сбросить</a></p>
+                            <button type="submit" class="form-control">НАСТРОЙКИ ДЛЯ ПОДКЛЮЧЕНИЯ VPN</button>
+                            <a href="#" class="forgot-password">забыли пароль</a>
                         </form>
                     </div>
                 </div>
@@ -169,7 +171,7 @@ Bootstrap 5 Form Pack Template
             <div class="video-wrap">
                 <video autoplay loop muted class="custom-video" poster="images/video-poster.jpg">
                     <source src="videos/video.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
+                    Ваш браузер не поддерживает видео формат.
                 </video>
             </div>
         </section>
