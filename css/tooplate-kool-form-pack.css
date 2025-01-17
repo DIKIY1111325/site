@@ -1,13 +1,8 @@
 /*
-
 Tooplate 2136 Персональный VPN Сервер
-
 https://www.tooplate.com/view/2136-kool-form-pack
-
 Bootstrap 5 Form Pack Template
-
 */
-
 
 /*---------------------------------------
   CUSTOM PROPERTIES ( VARIABLES )             
@@ -148,7 +143,7 @@ strong {
 }
 
 .page-404-title+h3 {
-    color: var(--secondary-color);
+    color: var (--secondary-color);
 }
 
 
@@ -187,7 +182,7 @@ strong {
 
 .custom-btn-bg-white {
     border-color: var(--white-color);
-    color: var(--white-color);
+    color: var (--white-color);
 }
 
 .custom-btn-group .link {
@@ -430,200 +425,4 @@ strong {
 .modal-header .btn-close {
     filter: brightness(0) invert(1);
     position: relative;
-    z-index: 22;
-    top: 20px;
-    right: 20px;
-    transition: all 0.3s;
-}
-
-.modal-header .btn-close:hover {
-    transform: rotate(180deg);
-}
-
-.modal-body,
-.modal-footer {
-    position: relative;
-    z-index: 2;
-}
-
-.modal-footer {
-    border-top: 0;
-    padding-top: 0;
-}
-
-.modal-footer p {
-    font-size: var(--btn-font-size);
-}
-
-
-/*---------------------------------------
-  CUSTOM FORM               
------------------------------------------*/
-
-.custom-form .form-control {
-    border-radius: var(--border-radius-large);
-    border-width: 2px;
-    box-shadow: none;
-    color: var(--p-color);
-    margin-bottom: 20px;
-    padding: 10px;
-    padding-left: 20px;
-    outline: none;
-}
-
-.custom-form .form-control:focus,
-.custom-form .form-control:hover {
-    border-color: var(--primary-color);
-}
-
-.form-check-input:checked {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-}
-
-.form-floating>label {
-    padding-left: 20px;
-}
-
-.custom-form button[type="submit"] {
-    background: var(--custom-btn-bg-color);
-    border: none;
-    border-radius: var(--border-radius-large);
-    color: var(--white-color);
-    font-family: var(--heading-font-family);
-    font-size: var(--p-font-size);
-    font-weight: var(--font-weight-bold);
-    transition: all 0.3s;
-    margin-bottom: 0;
-    padding-left: 10px;
-}
-
-.custom-form button[type="submit"]:hover,
-.custom-form button[type="submit"]:focus {
-    background: var(--custom-btn-bg-hover-color);
-    border-color: transparent;
-}
-
-.custom-form .form-check-label {
-    color: var(--p-color);
-}
-
-.contact-form .form-floating>textarea {
-    border-radius: var(--border-radius-medium);
-    height: 110px;
-}
-
-.login-form .custom-btn {
-    font-family: var(--heading-font-family);
-    padding: 10.25px 35px;
-    font-size: var(--p-font-size);
-}
-
-
-/*---------------------------------------
-  SOCIAL ICON               
------------------------------------------*/
-
-.social-icon {
-    margin: 0;
-    padding: 0;
-}
-
-.social-icon-item {
-    list-style: none;
-    display: inline-block;
-    vertical-align: top;
-}
-
-.social-icon-link {
-    border-radius: var(--border-radius-large);
-    color: var(--white-color);
-    font-size: var(--btn-font-size);
-    display: block;
-    margin-right: 5px;
-    text-align: center;
-    width: 35px;
-    height: 35px;
-    line-height: 36px;
-    transition: background 0.2s, color 0.2s;
-}
-
-.social-icon-link:hover {
-    background: var(--primary-color);
-    color: var(--white-color);
-}
-
-
-/*---------------------------------------
-  RESPONSIVE STYLES               
------------------------------------------*/
-
-@media screen and (max-width: 991px) {
-    h1 {
-        font-size: 36px;
-    }
-    h2 {
-        font-size: 28px;
-    }
-    h3 {
-        font-size: 22px;
-    }
-    h4 {
-        font-size: 20px;
-    }
-    h5 {
-        font-size: 18px;
-    }
-    h6 {
-        font-size: 16px;
-    }
-    .section-padding {
-        padding-top: 50px;
-        padding-bottom: 50px;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .site-header {
-        position: relative;
-        z-index: 10;
-        padding: 10px 15px;
-    }
-    body {
-        padding-top: 60px;
-    }
-    .hero-section {
-        padding-top: 20px;
-    }
-    .site-header .social-icon {
-        display: none !important;
-    }
-    .offcanvas-icon {
-        margin-left: 10px;
-    }
-    .countdown-item {
-        margin: 10px;
-    }
-}
-
-.selector-with-text {
-    font-size: 30px;
-}
-
-.site-header-text-small {
-    /* Ваши стили здесь */
-}
-
-@media (max-width: 767px) {
-    body {
-        padding-top: 0;
-    }
-}
-
-
-/* Добавленные стили для увеличения кнопки */
-
-.custom-form .form-control.large-button {
-    padding: 10px 8px;
-    font-size: 15px;
-}
+    z-index: 22
