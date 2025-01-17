@@ -40,6 +40,7 @@ Bootstrap 5 Form Pack Template
                 body {
                     background-color: var(--body-bg-color);
                     font-family: var(--body-font-family);
+                    color: var(--white-color);
                 }
                 /*---------------------------------------
   TYPOGRAPHY               
@@ -525,4 +526,33 @@ Bootstrap 5 Form Pack Template
                 .social-icons a:active {
                     transform: scale(0.9);
                     /* Уменьшение иконки при активации */
+                }
+                
+                a.forgot-password {
+                    color: var(--white-color);
+                    /* Установка белого цвета текста для ссылки */
+                }
+                
+                button.form-control {
+                    transition: background-color 0.3s ease;
+                }
+                
+                button.form-control:active {
+                    background-color: #77dd77;
+                }
+                /* Цвет текста подсказок по заполнению */
+                
+                .form-hint {
+                    color: var(--dark-color);
+                    /* Установка черного цвета текста */
+                }
+                
+                .form-floating .form-control {
+                    color: var(--dark-color);
+                    /* Установка черного цвета текста для полей ввода */
+                }
+                
+                .form-floating label {
+                    color: var(--dark-color);
+                    /* Установка черного цвета текста для подписей */
                 }
