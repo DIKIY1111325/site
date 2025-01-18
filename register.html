@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>ИСПОЛЬЗУЙТЕ VPN БЕСПЛАТНО</title>
+    <title>VPN БЕСПЛАТНО</title>
 
     <!-- CSS FILES -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,14 +41,14 @@ Bootstrap 5 Form Pack Template
             <div class="container">
                 <a class="site-header-text" href="index.html">
                     <i class="bi-box"></i>
-                    <span>ИСПОЛЬЗУЙТЕ VPN БЕСПЛАТНО</span>
+                    <span>ЛИЧНЫЙ VPN СЕРВЕР</span>
                 </a>
                 <div class="share-text">
-                    <span>ПОДЕЛИТЕСЬ ССЫЛКОЙ НА ПРОЕКТ НАЖАВ НА ИКОНКУ МЕССЕНДЖЕРА</span>
+                    <span>ПОДКЛЮЧИТЕ VPN БЕСПЛАТНО</span>
                     <!-- <span> нажав на иконку мессенджера</span> -->
                 </div>
-                <!-- <a href="#" class="custom-btn custom-border-btn" data-bs-toggle="modal" data-bs-target="#subscribeModal">АВТОРИЗУЙТЕСЬ
-                <a class="bi-list offcanvas-icon" data-bs-toggle="offcanvas" href="#offcanvasMenu" role="button" aria-controls="offcanvasMenu"></a> -->
+                <!-- <a href="#" class="custom-btn custom-border-btn" data-bs-toggle="modal" data-bs-target="#subscribeModal">вспомнить пароль -->
+                <a class="bi-list offcanvas-icon" data-bs-toggle="offcanvas" href="#offcanvasMenu" role="button" aria-controls="offcanvasMenu">меню</a>
             </div>
         </header>
 
@@ -91,20 +91,15 @@ Bootstrap 5 Form Pack Template
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
-
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-
                     <div class="modal-body">
                         <form action="#" method="get" class="custom-form mt-lg-4 mt-2" role="form">
                             <h2 class="modal-title" id="subscribeModalLabel">ваш № или @</h2>
-
                             <input type="email" name="email" id="email" pattern="[^ @]*@[^ @]*" class="form-control" placeholder="№ Телефона или Email" required="">
-
                             <button type="submit" class="form-control">сбросить пароль</button>
-                        </form>`
+                        </form>
                     </div>
-
                     <div class="modal-footer justify-content-center">
                         <p>я согласен с условиями использования сервиса</p>
                     </div>
@@ -117,9 +112,8 @@ Bootstrap 5 Form Pack Template
             <div class="container">
                 <div class="row">
 
-                    <div class="col-lg-6 col-12 mx-auto">
-
-                        <p class="text-white m-0 me-4">.</p>
+                    <div class="col-lg-6 col-12 mx-auto text-center">
+                        <p class="text-white m-0 me-4">РАССКАЖИТЕ О ПРОЕКТЕ ЗНАКОМЫМ, НАЖАВ ИКОНКУ МЕССЕНДЖЕРА</p>
                         <form class="custom-form" role="form" method="post">
 
 
@@ -128,13 +122,13 @@ Bootstrap 5 Form Pack Template
                             <div class="social-icons-container">
                                 <ul class="social-icons">
                                     <li>
-                                        <a href="#" class="bi-whatsapp"></a>
+                                        <a href="#" class="bi-instagram"></a>
                                     </li>
                                     <li>
                                         <a href="#" class="bi-telegram"></a>
                                     </li>
                                     <li>
-                                        <a href="#" class="bi-instagram"></a>
+                                        <a href="#" class="bi-whatsapp"></a>
                                     </li>
                                 </ul>
                             </div>
@@ -153,16 +147,19 @@ Bootstrap 5 Form Pack Template
                             </div>
                             <div class="form-floating mt-3">
                                 <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
-                                <label for="password">Придумайте или введите используемый ранее на сайте пароль</label>
+                                <label for="password">Новый или ранее используемый пароль</label>
                             </div>
-                            <div class="form-check mt-3">
-                                <input class="form-check-input" type="checkbox" value="" id="termsCheck">
-                                <label class="form-check-label" for="termsCheck">
-                                    Я согласен с условиями использования.
-                                </label>
+                            <div class="form-check mt-3 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <input class="form-check-input" type="checkbox" value="" id="termsCheck">
+                                    <label class="form-check-label" for="termsCheck">
+                                        Я согласен с условиями использования
+                                    </label>
+                                </div>
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#subscribeModal" class="forgot-password">вспомнить пароль</a>
                             </div>
+                            <br>
                             <button type="submit" class="form-control">НАСТРОЙКИ ДЛЯ ПОДКЛЮЧЕНИЯ VPN</button>
-                            <a href="#" class="forgot-password">забыли пароль</a>
                         </form>
                     </div>
                 </div>
@@ -171,7 +168,7 @@ Bootstrap 5 Form Pack Template
             <div class="video-wrap">
                 <video autoplay loop muted class="custom-video" poster="images/video-poster.jpg">
                     <source src="videos/video.mp4" type="video/mp4">
-                    Ваш браузер не поддерживает видео формат.
+                    браузер не поддерживает видео
                 </video>
             </div>
         </section>

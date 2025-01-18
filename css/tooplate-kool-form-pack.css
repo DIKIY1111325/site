@@ -257,9 +257,9 @@ Bootstrap 5 Form Pack Template
                 }
                 
                 .offcanvas-icon {
-                    font-size: var(--h3-font-size);
+                    font-size: 100%;
                     color: var(--white-color);
-                    margin-left: 15px;
+                    margin-left: 20px;
                 }
                 
                 .offcanvas nav ul {
@@ -485,14 +485,11 @@ Bootstrap 5 Form Pack Template
                 .share-text {
                     display: flex;
                     flex-direction: column;
-                    /* Размещение текста в два ряда */
                     align-items: center;
-                    /* Центрирование текста */
                     justify-content: center;
+                    width: 100%;
                     font-size: 1.2em;
-                    /* Увеличение размера шрифта */
                     color: var(--white-color);
-                    /* Белый цвет текста */
                 }
                 /* Стили для Instagram */
                 
@@ -555,4 +552,17 @@ Bootstrap 5 Form Pack Template
                 .form-floating label {
                     color: var(--dark-color);
                     /* Установка черного цвета текста для подписей */
+                }
+                
+                .form-check-input:checked {
+                    background-color: #25D366;
+                    /* Салатовый цвет */
+                    border-color: #25D366;
+                    /* Салатовый цвет для границы */
+                }
+                /* Изменения в файле tooplate-kool-form-pack.css */
+                
+                .hero-section .text-center {
+                    text-align: center;
+                    /* Центрирование текста */
                 }
