@@ -34,7 +34,7 @@ $(document).ready(function() {
 
         // Проверка поля "пароль"
         var passwordInput = $('#password').val();
-        var passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
+        var passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d\s]{8,}$/;
         if (!passwordPattern.test(passwordInput)) {
             isValid = false;
             messages.push("Пароль должен содержать минимум 8  символов, включая заглавные и прописные латинские буквы, цифры");
