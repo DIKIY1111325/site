@@ -84,54 +84,5 @@
         </section>
     </main>
 
-    <!-- JAVASCRIPT FILES -->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.bundle.min.js"></script>
-
-    <script>
-        $(document).ready(function () {
-            $('button.form-control').on('click', function () {
-                var isValid = true;
-                var messages = [];
-
-                // Проверка имени
-                var name = $('#full-name').val().trim();
-                if (!/^[A-Za-zА-Яа-я]{5,}$/.test(name)) {
-                    isValid = false;
-                    messages.push("Имя должно содержать минимум 5 букв.");
-                }
-
-                // Проверка контакта
-                var contact = $('#email-register').val().trim();
-                var phonePattern = /^(8|\+7)\d{10}$/;
-                var emailPattern = /^[^@\\s]{5,}@[^@\\s]{4,}\\.(ru|com|net)$/;
-                if (!phonePattern.test(contact) && !emailPattern.test(contact)) {
-                    isValid = false;
-                    messages.push("Введите корректный email или номер телефона.");
-                }
-
-                // Проверка пароля
-                var password = $('#password').val().trim();
-                if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d\s]{8,}$/.test(password)) {
-                    isValid = false;
-                    messages.push("Пароль должен содержать минимум 8 символов, включая заглавные, строчные буквы и цифры.");
-                }
-
-                // Проверка согласия
-                if (!$('#termsCheck').is(':checked')) {
-                    isValid = false;
-                    messages.push("Вы должны согласиться с условиями использования.");
-                }
-
-                // Отображение результата
-                if (isValid) {
-                    alert("Настройки VPN успешно скопированы!");
-                } else {
-                    alert(messages.join("\n"));
-                }
-            });
-        });
-    </script>
-</body>
-
+    
 </html>
