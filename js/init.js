@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d\s]{8,}$/;
         if (!password || !passwordRegex.test(password)) {
             isValid = false;
-            messages.push("Пароль должен содержать минимум 8 символов, включая заглавные и строчные буквы, а также цифры.");
+            messages.push("Пароль должен содержать минимум 8 символов, включая заглавные и строчные латинские буквы, а также цифры.");
         }
 
         // Проверка согласия с условиями
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const vpnSettingsLink = "vless://example-link-to-vpn-server"; // Замените на вашу ссылку
         navigator.clipboard.writeText(vpnSettingsLink)
             .then(() => {
-                alert("Настройки VPN сервера скопированы. Вставьте их в клиент для подключения.");
+                alert("Настройки VPN сервера скопированы. Вставьте их в приложение-клиент для подключения.");
             })
             .catch(err => {
                 alert("Ошибка при копировании настроек. Попробуйте снова.");
