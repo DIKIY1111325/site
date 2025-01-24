@@ -2,6 +2,38 @@ document.addEventListener('DOMContentLoaded', function () {
     const form = document.querySelector('.custom-form');
     const termsCheck = document.getElementById('termsCheck');
     const connectBtn = form.querySelector('button[type="submit"]');
+    const messengerLinks = document.querySelectorAll('.bi-telegram, .bi-whatsapp, .bi-instagram');
+    const fieldsToLock = document.querySelectorAll('#full-name, #email-register, #password');
+    let isAllowed = false;
+
+    // Блокируем поля изначально
+    fieldsToLock.forEach(field => {
+        field.disabled = true;
+    });
+
+    // Обработка кликов по иконкам
+    messengerLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            // Разблокируем доступ через 15 секунд
+            setTimeout(() => {
+                isAllowed = true;
+                fieldsToLock.forEach(field => {
+                    field.disabled = false; // Разблокируем поля
+                });
+                alert("Теперь вы cможете зарегистрироваться или авторизоваться и получить настройки VPN.");
+            }, 15000);
+        });
+    });
+
+    // Проверяем попытки ввода до истечения времени
+    fieldsToLock.forEach(field => {
+        field.addEventListener('focus', () => {
+            if (!isAllowed) {
+                alert("Отправка ссылки о проекте - обязательное условие предоставления тестового периода использования VPN.");
+                field.blur(); // Убираем фокус с поля
+            }
+        });
+    });
 
     form.addEventListener('submit', function (e) {
         e.preventDefault(); // Отключение стандартного поведения отправки формы
@@ -70,6 +102,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Проверка заполнения полей для активации кнопки
     form.addEventListener('input', function () {
+        const fullName = document.getElementById('full-name').value.trim();
+        const emailOrPhone = document.getElementById('email-register').value.trim();
+        const password = document.getElementById('password').value.trim();
         const allFieldsFilled = fullName && emailOrPhone && password && termsCheck.checked;
         connectBtn.disabled = !allFieldsFilled;
     });
