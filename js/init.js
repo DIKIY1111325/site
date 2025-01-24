@@ -1,63 +1,64 @@
-// Подключение функционала при загрузке документа
-$(document).ready(function () {
-    // Обработчик события для кнопки отправки формы
-    $('button.form-control').on('click', function (event) {
-        event.preventDefault(); // Предотвращаем отправку формы по умолчанию
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.querySelector('.custom-form');
+    const termsCheck = document.getElementById('termsCheck');
+    const connectBtn = form.querySelector('button[type="submit"]');
 
-        var isValid = true;
-        var messages = [];
+    form.addEventListener('submit', function (e) {
+        e.preventDefault(); // Отключение стандартного поведения отправки формы
 
-        // Проверка поля "имя"
-        var fullName = $('#full-name').val().trim();
-        var namePattern = /^[A-Za-zА-Яа-я]{5,}$/; // Минимум 5 букв
-        if (!namePattern.test(fullName)) {
-            isValid = false;
-            messages.push("Имя должно содержать минимум 5 букв.");
-        }
-
-        // Проверка поля "№ телефона или Email"
-        var contactInput = $('#email-register').val().trim();
-        var emailPattern = /^[^@\\s]{5,}@[^@\\s]{4,}\\.(ru|com|net)$/; // Email: перед @ минимум 5 символов, после минимум 4, оканчивается на .ru|.com|.net
-        var phonePattern = /^(8|\+7)\d{10}$/; // Номер начинается с 8 или +7 и содержит ровно 10 цифр
-        var noRepeatPattern = /(\d)\1{4}/; // Номер не должен содержать одну цифру более 4 раз подряд
-
-        if (phonePattern.test(contactInput)) {
-            if (noRepeatPattern.test(contactInput)) {
-                isValid = false;
-                messages.push("Номер телефона содержит более 4 одинаковых цифр подряд.");
-            }
-        } else if (!emailPattern.test(contactInput)) {
-            isValid = false;
-            messages.push("Введите корректный email или номер телефона.");
-        }
-
-        // Проверка поля "пароль"
-        var passwordInput = $('#password').val().trim();
-        var passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d\s]{8,}$/;
-        if (!passwordPattern.test(passwordInput)) {
-            isValid = false;
-            messages.push("Пароль должен содержать минимум 8 символов, включая заглавные и строчные латинские буквы, цифры.");
-        }
+        let isValid = true;
+        const messages = [];
 
         // Проверка согласия с условиями
-        if (!$('#termsCheck').is(':checked')) {
+        if (!termsCheck.checked) {
             isValid = false;
             messages.push("Пожалуйста, ознакомьтесь и согласитесь с условиями сервиса.");
         }
 
-        // Обработка результата проверки
-        if (!isValid) {
-            alert(messages.join("\n")); // Выводим ошибки
-        } else {
-            // Анимация изменения цвета кнопки
-            $(this).css('background-color', '#77dd77');
-            alert("НАСТРОЙКИ VPN СЕРВЕРА СКОПИРОВАНЫ, ВСТАВТЕ ИХ ПРИ СОЗДАНИИ НОВОГО ПРОФИЛЯ В ПРОГРАММЕ КЛИЕНТЕ");
+        // Проверка других полей формы
+        const fullName = document.getElementById('full-name').value.trim();
+        const email = document.getElementById('email-register').value.trim();
+        const password = document.getElementById('password').value.trim();
 
-            // Копирование ссылки в буфер обмена
-            const vpnLink = "https://example.com/vpn-settings"; // Замените на свою ссылку
-            navigator.clipboard.writeText(vpnLink).catch(err => {
-                console.error("Ошибка копирования: ", err);
-            });
+        if (!fullName) {
+            isValid = false;
+            messages.push("Поле 'Ваше имя' обязательно для заполнения.");
         }
+
+        if (!email || !/\S+@\S+\.\S+/.test(email)) {
+            isValid = false;
+            messages.push("Введите корректный Email или номер телефона.");
+        }
+
+        if (!password || password.length < 6) {
+            isValid = false;
+            messages.push("Пароль должен содержать не менее 6 символов.");
+        }
+
+        // Вывод сообщений об ошибках
+        if (!isValid) {
+            alert(messages.join("\n"));
+            return; // Остановить дальнейшее выполнение
+        }
+
+        // Анимация изменения цвета кнопки
+        connectBtn.style.backgroundColor = '#77dd77';
+
+        // Копирование ссылки в буфер обмена
+        const vpnSettingsLink = "vless://example-link-to-vpn-server"; // Замените на вашу ссылку
+        navigator.clipboard.writeText(vpnSettingsLink)
+            .then(() => {
+                alert("НАСТРОЙКИ VPN СЕРВЕРА СКОПИРОВАНЫ. Для использования, вставьте их в приложение-клиент.");
+            })
+            .catch(err => {
+                alert("Ошибка при копировании настроек. Попробуйте снова.");
+                console.error("Ошибка копирования в буфер обмена:", err);
+            });
+    });
+
+    // Проверка состояния формы и активация кнопки
+    form.addEventListener('input', function () {
+        const allFieldsFilled = fullName && email && password && termsCheck.checked;
+        connectBtn.disabled = !allFieldsFilled;
     });
 });
