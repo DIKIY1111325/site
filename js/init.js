@@ -9,48 +9,58 @@ document.addEventListener('DOMContentLoaded', function () {
         let isValid = true;
         const messages = [];
 
+        // Проверка поля "имя"
+        const fullName = document.getElementById('full-name').value.trim();
+        const fullNameRegex = /^[a-zA-Zа-яА-Я]{5,}$/;
+        if (!fullName || !fullNameRegex.test(fullName)) {
+            isValid = false;
+            messages.push("Имя должно содержать минимум 5 букв.");
+        }
+
+        // Проверка поля "№ телефона или Email"
+        const emailOrPhone = document.getElementById('email-register').value.trim();
+        const emailRegex = /^[a-zA-Z0-9._%+-]{5,}@[a-zA-Z0-9.-]{4,}\.(ru|com|net)$/;
+        const phoneRegex = /^(8|\+7)\d{10}$/;
+        const noRepeatRegex = /(\d)\1{4}/; // Номер не должен содержать одну цифру более 4 раз подряд
+
+        if (phoneRegex.test(emailOrPhone)) {
+            if (noRepeatRegex.test(emailOrPhone)) {
+                isValid = false;
+                messages.push("Номер телефона содержит более 4 одинаковых цифр подряд.");
+            }
+        } else if (!emailRegex.test(emailOrPhone)) {
+            isValid = false;
+            messages.push("Введите корректный email или номер телефона.");
+        }
+
+        // Проверка поля "пароль"
+        const password = document.getElementById('password').value.trim();
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d\s]{8,}$/;
+        if (!password || !passwordRegex.test(password)) {
+            isValid = false;
+            messages.push("Пароль должен содержать минимум 8 символов, включая заглавные и строчные буквы, а также цифры.");
+        }
+
         // Проверка согласия с условиями
         if (!termsCheck.checked) {
             isValid = false;
             messages.push("Пожалуйста, ознакомьтесь и согласитесь с условиями сервиса.");
         }
 
-        // Проверка других полей формы
-        const fullName = document.getElementById('full-name').value.trim();
-        const email = document.getElementById('email-register').value.trim();
-        const password = document.getElementById('password').value.trim();
-
-        const fullNameRegex = /^[a-zA-Zа-яА-Я]{5,}$/;
-        if (!fullName || !fullNameRegex.test(fullName)) {
-            isValid = false;
-            messages.push("Поле 'Ваше имя' должно содержать не менее 5 букв.");
-        }
-
-        const emailRegex = /^[a-zA-Z0-9._%+-]{5,}@[a-zA-Z0-9.-]{4,}\.(ru|com|net)$/;
-        if (!email || !emailRegex.test(email)) {
-            isValid = false;
-            messages.push("Пожалуйста введите корректный Email");
-        }
-
-        if (!password || password.length < 8) {
-            isValid = false;
-            messages.push("Пароль должен содержать не менее 8 символов.");
-        }
-
         // Вывод сообщений об ошибках
         if (!isValid) {
             alert(messages.join("\n"));
-            return; // Остановить дальнейшее выполнение
+            return; // Остановить выполнение при ошибке
         }
 
-        // Анимация изменения цвета кнопки
+        // Анимация кнопки
         connectBtn.style.backgroundColor = '#77dd77';
 
-        // Копирование ссылки в буфер обмена
+        // Копирование настроек VPN
         const vpnSettingsLink = "vless://example-link-to-vpn-server"; // Замените на вашу ссылку
         navigator.clipboard.writeText(vpnSettingsLink)
             .then(() => {
-                alert("НАСТРОЙКИ VPN СЕРВЕРА СКОПИРОВАНЫ. Для использования, вставьте их в приложение-клиент.");
+                alert("Настройки VPN сервера скопированы. Вставьте их в клиент для подключения.");
             })
             .catch(err => {
                 alert("Ошибка при копировании настроек. Попробуйте снова.");
@@ -58,9 +68,9 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     });
 
-    // Проверка состояния формы и активация кнопки
+    // Проверка заполнения полей для активации кнопки
     form.addEventListener('input', function () {
-        const allFieldsFilled = fullName && email && password && termsCheck.checked;
+        const allFieldsFilled = fullName && emailOrPhone && password && termsCheck.checked;
         connectBtn.disabled = !allFieldsFilled;
     });
 });
