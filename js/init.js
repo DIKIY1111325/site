@@ -20,19 +20,21 @@ document.addEventListener('DOMContentLoaded', function () {
         const email = document.getElementById('email-register').value.trim();
         const password = document.getElementById('password').value.trim();
 
-        if (!fullName) {
+        const fullNameRegex = /^[a-zA-Zа-яА-Я]{5,}$/;
+        if (!fullName || !fullNameRegex.test(fullName)) {
             isValid = false;
-            messages.push("Поле 'Ваше имя' обязательно для заполнения.");
+            messages.push("Поле 'Ваше имя' должно содержать не менее 5 букв.");
         }
 
-        if (!email || !/\S+@\S+\.\S+/.test(email)) {
+        const emailRegex = /^[a-zA-Z0-9._%+-]{5,}@[a-zA-Z0-9.-]{4,}\.(ru|com|net)$/;
+        if (!email || !emailRegex.test(email)) {
             isValid = false;
-            messages.push("Введите корректный Email или номер телефона.");
+            messages.push("Пожалуйста введите корректный Email");
         }
 
-        if (!password || password.length < 6) {
+        if (!password || password.length < 8) {
             isValid = false;
-            messages.push("Пароль должен содержать не менее 6 символов.");
+            messages.push("Пароль должен содержать не менее 8 символов.");
         }
 
         // Вывод сообщений об ошибках
