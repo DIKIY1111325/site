@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (phoneRegex.test(emailOrPhone)) {
             if (noRepeatRegex.test(emailOrPhone)) {
                 isValid = false;
-                messages.push("Номер телефона содержит более 4 одинаковых цифр подряд.");
+                messages.push("Номер телефона содержит более 4 одинаковых цифр подряд. Вероятно вы ошиблись.");
             }
         } else if (!emailRegex.test(emailOrPhone)) {
             isValid = false;
