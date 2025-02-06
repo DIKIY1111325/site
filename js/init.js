@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const termsCheck = document.getElementById('termsCheck');
     const connectBtn = form.querySelector('button[type="submit"]');
     const messengerLinks = document.querySelectorAll('.bi-telegram, .bi-whatsapp, .bi-instagram');
-    const fieldsToLock = document.querySelectorAll('#full-name, #email-register, #password');
+    const fieldsToLock = document.querySelectorAll('#full-name, #email-invite, #password');
     let isAllowed = false;
 
     // Блокируем поля изначально
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Проверка поля "№ телефона или Email"
-        const emailOrPhone = document.getElementById('email-register').value.trim();
+        const emailOrPhone = document.getElementById('email-invite').value.trim();
         const emailRegex = /^[a-zA-Z0-9._%+-]{5,}@[a-zA-Z0-9.-]{4,}\.(ru|com|net)$/;
         const phoneRegex = /^(8|\+7)\d{10}$/;
         const noRepeatRegex = /(\d)\1{4}/; // Номер не должен содержать одну цифру более 4 раз подряд
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Проверка заполнения полей для активации кнопки
     form.addEventListener('input', function () {
         const fullName = document.getElementById('full-name').value.trim();
-        const emailOrPhone = document.getElementById('email-register').value.trim();
+        const emailOrPhone = document.getElementById('email-invite').value.trim();
         const password = document.getElementById('password').value.trim();
         const allFieldsFilled = fullName && emailOrPhone && password && termsCheck.checked;
         connectBtn.disabled = !allFieldsFilled;

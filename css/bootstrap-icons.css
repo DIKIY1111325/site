@@ -7441,9 +7441,24 @@
 }
 
 .bi-list+span {
-    /* Стили для текста "меню", если он находится в span элементе сразу после иконки */
+    /* Стили для текста "узнать подробнее", если он находится в span элементе сразу после иконки */
     font-size: 1.2em;
     /* Установка размера текста */
     vertical-align: middle;
     /* Выравнивание текста по вертикали с иконкой */
+}
+/* Стили для текста "УЗНАТЬ ПОДРОБНЕЕ" */
+.offcanvas-icon {
+    font-family: var(--body-font-family); /* Шрифт */
+    font-size: var(--p-font-size); /* Размер шрифта */
+    font-weight: var(--font-weight-bold); /* Жирность шрифта */
+    color: var(--white-color); /* Цвет текста */
+    text-decoration: none; /* Убрать подчеркивание */
+    display: inline-flex; /* Для выравнивания текста */
+    align-items: center; /* Выравнивание по вертикали */
+    margin-left: 20px; /* Отступ слева */
+}
+
+.offcanvas-icon:hover {
+    color: var(--link-hover-color); /* Цвет при наведении */
 }
