@@ -561,3 +561,8 @@
                     text-align: center;
                     /* Центрирование текста */
                 }
+				.btn-wide {
+    min-width: 400px; /* Регулируйте ширину под ваш дизайн */
+    text-align: center;
+    white-space: nowrap; /* Запрещает перенос текста */
+}
