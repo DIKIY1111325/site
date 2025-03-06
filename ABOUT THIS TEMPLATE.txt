@@ -6,6 +6,9 @@ Tooplate.com HTML Templates
 - README.md
 - contact.html
 - css/
+bootstrap-icons.css
+bootstrap.min.css
+tooplate-kool-form-pack.css
 - faq1_vpn_serv.html
 - faq2_vpn_serv.html
 - faq3_vpn_serv.html
@@ -17,6 +20,13 @@ Tooplate.com HTML Templates
 - indexиии.html
 - invite.html
 - js/
+auth-check.js
+bootstrap.bundle.min.js
+countdown.js
+init.js
+jquery.min.js
+login.js
+supabase.js
 - login.html
 - password-reset.html
 - pay.html
