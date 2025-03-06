@@ -1,10 +1,31 @@
 Tooplate.com HTML Templates
 
 структура
-index ---->>> subscription---->>>pay
-login--->>> pasword-reset
-invite
-vpn_client
+- 404.html
+- ABOUT THIS TEMPLATE.txt
+- README.md
+- contact.html
+- css/
+- faq1_vpn_serv.html
+- faq2_vpn_serv.html
+- faq3_vpn_serv.html
+- faq4_vpn_serv.html
+- faq5_vpn_serv.html
+- fonts/
+- images/
+- index.html
+- indexиии.html
+- invite.html
+- js/
+- login.html
+- password-reset.html
+- pay.html
+- register.html
+- subscription VPN server.html
+- subscription VPN.html
+- subscription.html
+- videos/
+- vpn_client.html
 
 ТЗ ДЛЯ СТРАНИЦ сайта:
 
