@@ -4,6 +4,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const messengerLinks = document.querySelectorAll('.bi-telegram, .bi-whatsapp, .bi-instagram');
     let isAllowed = false;
 
+    // Присваивание метки пользователю
+    const userTag = 'user_' + Date.now();
+    localStorage.setItem('userTag', userTag);
+
     // Обработка кликов по иконкам мессенджеров
     messengerLinks.forEach(link => {
         link.addEventListener('click', () => {
@@ -36,6 +40,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!isAllowed) {
             e.preventDefault();
             alert("Поделитесь ссылкой со знакомыми для подключения VPN бесплатно");
+        } else {
+            window.location.href = 'login.html'; // Перенаправление на страницу LOGIN
         }
     });
 });
