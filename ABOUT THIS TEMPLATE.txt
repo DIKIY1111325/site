@@ -15,7 +15,12 @@ tooplate-kool-form-pack.css
 - faq4_vpn_serv.html
 - faq5_vpn_serv.html
 - fonts/
+bootstrap-icons.woff
+bootstrap-icons.woff2
 - images/
+X-UI Panel.png
+X-UI Panel1.png
+X-UI_Panel.png
 - index.html
 - indexиии.html
 - invite.html
