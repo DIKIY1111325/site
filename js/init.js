@@ -14,14 +14,14 @@ document.addEventListener('DOMContentLoaded', function () {
     // Обработка кликов по иконкам
     messengerLinks.forEach(link => {
         link.addEventListener('click', () => {
-            // Разблокируем доступ через 15 секунд
+            // Разблокируем доступ через 25 секунд
             setTimeout(() => {
                 isAllowed = true;
                 fieldsToLock.forEach(field => {
                     field.disabled = false; // Разблокируем поля
                 });
                 alert("Теперь вы cможете зарегистрироваться или авторизоваться и получить настройки VPN.");
-            }, 15000);
+            }, 25000);
         });
     });
 
