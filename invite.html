@@ -1,111 +1,121 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const form = document.querySelector('.custom-form');
-    const termsCheck = document.getElementById('termsCheck');
-    const connectBtn = form.querySelector('button[type="submit"]');
-    const messengerLinks = document.querySelectorAll('.bi-telegram, .bi-whatsapp, .bi-instagram');
-    const fieldsToLock = document.querySelectorAll('#full-name, #email-invite, #password');
-    let isAllowed = false;
-
-    // Блокируем поля изначально
-    fieldsToLock.forEach(field => {
-        field.disabled = true;
-    });
-
-    // Обработка кликов по иконкам
-    messengerLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            // Разблокируем доступ через 25 секунд
-            setTimeout(() => {
-                isAllowed = true;
-                fieldsToLock.forEach(field => {
-                    field.disabled = false; // Разблокируем поля
-                });
-                alert("Теперь вы cможете зарегистрироваться или авторизоваться и получить настройки VPN.");
-            }, 25000);
-        });
-    });
-
-    // Проверяем попытки ввода до истечения времени
-    fieldsToLock.forEach(field => {
-        field.addEventListener('focus', () => {
-            if (!isAllowed) {
-                alert("Отправка ссылки о проекте - обязательное условие предоставления тестового периода использования VPN.");
-                field.blur(); // Убираем фокус с поля
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="ССЫЛКА НА ТЕСТ VPN">
+    <meta name="author" content="vpn, xray, vless, бесплатно">
+    <title>ССЫЛКА НА БЕСПЛАТНЫЙ VPN</title>
+    <!-- CSS FILEС -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,400;0,700&family=Unbounded:wght@400;700&display=swap" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/tooplate-kool-form-pack.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script>
+        // Проверка авторизации
+        supabase.auth.getUser().then(({ data, error }) => {
+            if (error || !data.user) {
+                window.location.href = 'login.html'; // Перенаправление на login.html, если пользователь не авторизован
             }
         });
-    });
+    </script>
+</head>
 
-    form.addEventListener('submit', function (e) {
-        e.preventDefault(); // Отключение стандартного поведения отправки формы
+<body>
+    <main>
+        <header class="site-header">
+            <div class="container">
+                <a class="site-header-text" href="index.html">
+                    <i class="bi-box"></i>
+                    <span>ПЕРСОНАЛЬНЫЙ VPN СЕРВИС | СЕРВЕР</span>
+                </a>
+                <div class="share-text">
+                    <span><h6>ЗА НЕСКОЛЬКО КЛИКОВ</h6></span>
+                </div>
+                <a class="offcanvas-icon" data-bs-toggle="offcanvas" href="#offcanvasMenu" role="button" aria-controls="offcanvasMenu">УЗНАТЬ ПОДРОБНЕЕ</a>
+            </div>
+        </header>
 
-        let isValid = true;
-        const messages = [];
+        <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
+            <div class="offcanvas-header">
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body d-flex flex-column justify-content-center align-items-center">
+                <nav>
+                    <ul>
+                        <li><a href="index.html">ГЛАВНАЯ</a></li>
+                        <li><a href="login.html">АВТОРИЗАЦИЯ</a></li>
+                        <li><a href="password-reset.html">СБРОСИТЬ ПАРОЛЬ</a></li>
+                        <li><a href="invite.html">ПРИГЛАШЕНИЕ ДРУЗЕЙ</a></li>
+                        <li><a href="vpn_client.html">ПРИЛОЖЕНИЕ VPN-КЛИЕНТ</a></li>
+                        <li><a href="subscription.html">ТАРИФЫ</a></ли>
+                        <li><a href="pay.html">ОПЛАТА</a></ли>
+                        <li><a href="contact.html">ЗАДАТЬ ВОПРОС</a></ли>
+                        <li><a href="404.html">404 СТРАНИЦА</a></ли>
+                        <li><a href="faq1_vpn_serv.html">БЕЗОПАСНОСТЬ ДАННЫХ</a></ли>
+                        <li><a href="faq2_vpn_serv.html">УСТОЙЧИВОСТЬ К БЛОКИРОВКАМ</а></ли>
+                        <li><a href="faq3_vpn_serv.html">ЛЕГКОЕ УПРАВЛЕНИЕ</а></ли>
+                        <ли><a href="faq4_vpn_serv.html">faq4</а></ли>
+                    </ул>
+                </навигация>
+            </div>
+        </div>
+        
+        <section class="hero-section d-flex justify-content-center align-items-center">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 col-12 mx-auto text-center">
+                        <h5 class="text-white m-0 me-4">ПОДКЛЮЧЕНИЕ К VPN СЕРВЕРУ</h5>
+                        <h5 class="text-white m-0 me-4">НА ТЕСТОВЫЙ ПЕРИОД БЕСПЛАТНО</h5>
+                        <br>
+                        <h6 class="text-white m-0 me-4">ОТПРАВТЕ ПРИГЛАШЕНИЕ ЗНАКОМЫМ, НАЖАВ ИКОНКУ МЕССЕНДЖЕРА</h6>
+                        <br>
+                        <div class="social-icons-container">
+                            <ul class="social-icons">
+                                <li>
+                                    <a href="whatsapp://send?text=По ссылке можно подключить бесплатный VPN https://dikiy1111325.github.io/site/index.html" class="bi-whatsapp" target="_blank"></a>
+                                </li>
+                                <li>
+                                    <a href="https://telegram.me/share/url?url=https://dikiy1111325.github.io/site/index.html&text=По ссылке можно подключить бесплатный VPN" class="bi-telegram" target="_blank"></a>
+                                </li>
+                                <li>
+                                    <a href="https://www.instagram.com/?url=https://dikiy1111325.github.io/site/index.html" class="bi-instagram" target="_blank"></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <form class="custom-form" role="form" method="post">
+                            <br>
+                            <h5 class="text-white m-0 me-4">вам будут доступны настройки VPN сервера</h5>
+                            <br>
+                            <p class="text-white m-0 me-4">используйте настройки для подключения VPN с помощью приложения <a href="https://hiddify.com/#app" target="_blank">Hiddify</a> аналогичные приложения:
+                                <br>
+                                <a href="https://www.apple.com/us/search/vless?src=serp" target="_blank"><i class="bi bi-apple"></i> App Store</a> или 
+                                <a href="https://play.google.com/store/search?q=vless+client&c=apps" target="_blank"><i class="bi bi-google"></i> Google Play</a>.
+                            </p>
+                            <br>
+                            <a href="login.html" class="custom-btn custom-border-btn btn">установить программу клиент и получить настройки для подключения</a>
+                            <br>
+                            <a href="login.html" class="custom-btn custom-border-btn btn">получить настройки для подключения у меня установлен клиент</a>
+                            <br>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="video-wrap">
+                <video autoplay loop muted class="custom-video" poster="images/video-poster.jpg">
+                    <source src="videos/video.mp4" type="video/mp4">
+                    ваш браузер не поддерживает видео
+                </video>
+            </div>
+        </section>
+    </main>
 
-        // Проверка поля "имя"
-        const fullName = document.getElementById('full-name').value.trim();
-        const fullNameRegex = /^[a-zA-Zа-яА-Я]{5,}$/;
-        if (!fullName || !fullNameRegex.test(fullName)) {
-            isValid = false;
-            messages.push("Имя должно содержать минимум 5 букв.");
-        }
-
-        // Проверка поля "№ телефона или Email"
-        const emailOrPhone = document.getElementById('email-invite').value.trim();
-        const emailRegex = /^[a-zA-Z0-9._%+-]{5,}@[a-zA-Z0-9.-]{4,}\.(ru|com|net)$/;
-        const phoneRegex = /^(8|\+7)\d{10}$/;
-        const noRepeatRegex = /(\d)\1{4}/; // Номер не должен содержать одну цифру более 4 раз подряд
-
-        if (phoneRegex.test(emailOrPhone)) {
-            if (noRepeatRegex.test(emailOrPhone)) {
-                isValid = false;
-                messages.push("Пожалуйста проверьте номер телефона. Вероятно вы ошиблись.");
-            }
-        } else if (!emailRegex.test(emailOrPhone)) {
-            isValid = false;
-            messages.push("Введите корректный email или номер телефона.");
-        }
-
-        // Проверка поля "пароль"
-        const password = document.getElementById('password').value.trim();
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d\s]{8,}$/;
-        if (!password || !passwordRegex.test(password)) {
-            isValid = false;
-            messages.push("Пароль должен содержать минимум 8 символов, включая заглавные и строчные латинские буквы, а также цифры.");
-        }
-
-        // Проверка согласия с условиями
-        if (!termsCheck.checked) {
-            isValid = false;
-            messages.push("Пожалуйста, ознакомьтесь и согласитесь с условиями сервиса.");
-        }
-
-        // Вывод сообщений об ошибках
-        if (!isValid) {
-            alert(messages.join("\n"));
-            return; // Остановить выполнение при ошибке
-        }
-
-        // Анимация кнопки
-        connectBtn.style.backgroundColor = '#77dd77';
-
-        // Копирование настроек VPN
-        const vpnSettingsLink = "vless://example-link-to-vpn-server"; // Замените на вашу ссылку
-        navigator.clipboard.writeText(vpnSettingsLink)
-            .then(() => {
-                alert("Настройки VPN сервера скопированы. Вставьте их в приложение-клиент для подключения.");
-            })
-            .catch(err => {
-                alert("Ошибка при копировании настроек. Попробуйте снова.");
-                console.error("Ошибка копирования в буфер обмена:", err);
-            });
-    });
-
-    // Проверка заполнения полей для активации кнопки
-    form.addEventListener('input', function () {
-        const fullName = document.getElementById('full-name').value.trim();
-        const emailOrPhone = document.getElementById('email-invite').value.trim();
-        const password = document.getElementById('password').value.trim();
-        const allFieldsFilled = fullName && emailOrPhone && password && termsCheck.checked;
-        connectBtn.disabled = !allFieldsFilled;
-    });
-});
+    <!-- JAVASCRIPT FILEС -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/invite.js"></script>
+</body>
+</html>
