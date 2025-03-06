@@ -1,41 +1,68 @@
-// Инициализация Supabase
-const supabaseUrl = 'https://dsvaqphuagrnkjmthtet.supabase.co'; // Ваш Project URL
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzdmFxcGh1YWdybmtqbXRodGV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDExNjUwMTQsImV4cCI6MjA1Njc0MTAxNH0.7p5J2VlCie9lWoUrm1YkMdSeEkRadB4b7vROMlPexsY'; // Ваш Anon key
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.querySelector('.custom-form');
     const termsCheck = document.getElementById('termsCheck');
     const connectBtn = form.querySelector('button[type="submit"]');
-    const message = document.getElementById('message');
+    const messengerLinks = document.querySelectorAll('.bi-telegram, .bi-whatsapp, .bi-instagram');
+    const fieldsToLock = document.querySelectorAll('#full-name, #email-invite, #password');
+    let isAllowed = false;
 
-    form.addEventListener('submit', async function (e) {
+    // Блокируем поля изначально
+    fieldsToLock.forEach(field => {
+        field.disabled = true;
+    });
+
+    // Обработка кликов по иконкам
+    messengerLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            // Разблокируем доступ через 25 секунд
+            setTimeout(() => {
+                isAllowed = true;
+                fieldsToLock.forEach(field => {
+                    field.disabled = false; // Разблокируем поля
+                });
+                alert("Теперь вы cможете зарегистрироваться или авторизоваться и получить настройки VPN.");
+            }, 25000);
+        });
+    });
+
+    // Проверяем попытки ввода до истечения времени
+    fieldsToLock.forEach(field => {
+        field.addEventListener('focus', () => {
+            if (!isAllowed) {
+                alert("Отправка ссылки о проекте - обязательное условие предоставления тестового периода использования VPN.");
+                field.blur(); // Убираем фокус с поля
+            }
+        });
+    });
+
+    form.addEventListener('submit', function (e) {
         e.preventDefault(); // Отключение стандартного поведения отправки формы
 
         let isValid = true;
         const messages = [];
 
-        // Проверка поля "email"
-        const email = document.getElementById('email').value.trim();
-        const emailRegex = /^[a-zA-Z0-9._%+-]{5,}@[a-zA-Z0-9.-]{4,}\.(ru|com|net)$/;
-        if (!email || !emailRegex.test(email)) {
+        // Проверка поля "имя"
+        const fullName = document.getElementById('full-name').value.trim();
+        const fullNameRegex = /^[a-zA-Zа-яА-Я]{5,}$/;
+        if (!fullName || !fullNameRegex.test(fullName)) {
             isValid = false;
-            messages.push("Введите корректный email.");
+            messages.push("Имя должно содержать минимум 5 букв.");
         }
 
-        // Проверка поля "№ телефона"
-        const phone = document.getElementById('phone').value.trim();
+        // Проверка поля "№ телефона или Email"
+        const emailOrPhone = document.getElementById('email-invite').value.trim();
+        const emailRegex = /^[a-zA-Z0-9._%+-]{5,}@[a-zA-Z0-9.-]{4,}\.(ru|com|net)$/;
         const phoneRegex = /^(8|\+7)\d{10}$/;
         const noRepeatRegex = /(\d)\1{4}/; // Номер не должен содержать одну цифру более 4 раз подряд
 
-        if (phoneRegex.test(phone)) {
-            if (noRepeatRegex.test(phone)) {
+        if (phoneRegex.test(emailOrPhone)) {
+            if (noRepeatRegex.test(emailOrPhone)) {
                 isValid = false;
                 messages.push("Пожалуйста проверьте номер телефона. Вероятно вы ошиблись.");
             }
-        } else if (!phoneRegex.test(phone)) {
+        } else if (!emailRegex.test(emailOrPhone)) {
             isValid = false;
-            messages.push("Введите корректный номер телефона.");
+            messages.push("Введите корректный email или номер телефона.");
         }
 
         // Проверка поля "пароль"
@@ -54,55 +81,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Вывод сообщений об ошибках
         if (!isValid) {
-            message.textContent = messages.join("\n");
+            alert(messages.join("\n"));
             return; // Остановить выполнение при ошибке
         }
 
         // Анимация кнопки
         connectBtn.style.backgroundColor = '#77dd77';
 
-        try {
-            // Попытка регистрации или авторизации
-            let { user, error } = await supabase.auth.signUp({
-                email: email,
-                password: password
+        // Копирование настроек VPN
+        const vpnSettingsLink = "vless://example-link-to-vpn-server"; // Замените на вашу ссылку
+        navigator.clipboard.writeText(vpnSettingsLink)
+            .then(() => {
+                alert("Настройки VPN сервера скопированы. Вставьте их в приложение-клиент для подключения.");
+            })
+            .catch(err => {
+                alert("Ошибка при копировании настроек. Попробуйте снова.");
+                console.error("Ошибка копирования в буфер обмена:", err);
             });
-
-            if (error) {
-                // Если ошибка, попытка авторизации
-                ({ user, error } = await supabase.auth.signIn({
-                    email: email,
-                    password: password
-                }));
-
-                if (error) {
-                    message.textContent = `Ошибка: ${error.message}`;
-                    return;
-                }
-            }
-
-            message.textContent = 'Успешная авторизация!';
-
-            // Получаем метку пользователя из localStorage
-            const redirectPage = localStorage.getItem('redirectPage');
-
-            // Перенаправляем пользователя на нужную страницу
-            if (redirectPage) {
-                window.location.href = redirectPage;
-            } else {
-                window.location.href = 'index.html'; // В случае ошибки или неопределенной страницы
-            }
-        } catch (err) {
-            message.textContent = `Неожиданная ошибка: ${err.message}`;
-        }
     });
 
     // Проверка заполнения полей для активации кнопки
     form.addEventListener('input', function () {
-        const email = document.getElementById('email').value.trim();
-        const phone = document.getElementById('phone').value.trim();
+        const fullName = document.getElementById('full-name').value.trim();
+        const emailOrPhone = document.getElementById('email-invite').value.trim();
         const password = document.getElementById('password').value.trim();
-        const allFieldsFilled = email && phone && password && termsCheck.checked;
+        const allFieldsFilled = fullName && emailOrPhone && password && termsCheck.checked;
         connectBtn.disabled = !allFieldsFilled;
     });
 });
