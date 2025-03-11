@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="ССЫЛКА НА ТЕСТ VPN">
+    <meta name="author" content="vpn, xray, vless, бесплатно">
+    <title>ССЫЛКА НА БЕСПЛАТНЫЙ VPN</title>
+    <!-- CSS FILES -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,400;0,700&family=Unbounded:wght@400;700&display=swap" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/tooplate-kool-form-pack.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script>
+        // Проверка авторизации
+        supabase.auth.getUser().then(({ data, error }) => {
+            if (error || !data.user) {
+                window.location.href = 'login.html'; // Перенаправление на login.html, если пользователь не авторизован
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <main>
+        <header class="site-header">
+            <div class="container">
+                <a class="site-header-text" href="index.html">
+                    <i class="bi-box"></i>
+                    <span>ПЕРСОНАЛЬНЫЙ VPN СЕРВИС | СЕРВЕР</span>
+                </a>
+                <div class="share-text">
+                    <span><h6>ЗА НЕСКОЛЬКО КЛИКОВ</h6></span>
+                </div>
+                <a class="offcanvas-icon" data-bs-toggle="offcanvas" href="#offcanvasMenu" role="button" aria-controls="offcanvasMenu">УЗНАТЬ ПОДРОБНЕЕ</a>
+            </div>
+        </header>
+
+        <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
+            <div class="offcanvas-header">
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body d-flex flex-column justify-content-center align-items-center">
+                <nav>
+                    <ul>
+                        <li><a href="index.html">ГЛАВНАЯ</a></li>
+                        <li><a href="login.html">АВТОРИЗАЦИЯ</a></li>
+                        <li><a href="password-reset.html">СБРОСИТЬ ПАРОЛЬ</a></li>
+                        <li><a href="invite.html">ПРИГЛАШЕНИЕ ДРУЗЕЙ</a></li>
+                        <li><a href="vpn_client.html">ПРИЛОЖЕНИЕ VPN-КЛИЕНТ</a></li>
+                        <li><a href="subscription.html">ТАРИФЫ</a></li>
+                        <li><a href="pay.html">ОПЛАТА</a></li>
+                        <li><a href="contact.html">ЗАДАТЬ ВОПРОС</a></li>
+                        <li><a href="404.html">404 СТРАНИЦА</a></li>
+                        <li><a href="faq1_vpn_serv.html">БЕЗОПАСНОСТЬ ДАННЫХ</a></li>
+                        <li><a href="faq2_vpn_serv.html">УСТОЙЧИВОСТЬ К БЛОКИРОВКАМ</a></li>
+                        <li><a href="faq3_vpn_serv.html">ЛЕГКОЕ УПРАВЛЕНИЕ</a></li>
+                        <li><a href="faq4_vpn_serv.html">faq4</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        
+        <section class="hero-section d-flex justify-content-center align-items-center">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 col-12 mx-auto text-center">
+                        <h5 class="text-white m-0 me-4">ПОДКЛЮЧЕНИЕ К VPN СЕРВЕРУ</h5>
+                        <h5 class="text-white m-0 me-4">НА ТЕСТОВЫЙ ПЕРИОД БЕСПЛАТНО</h5>
+                        <br>
+                        <h6 class="text-white m-0 me-4">ОТПРАВТЕ ПРИГЛАШЕНИЕ ЗНАКОМЫМ, НАЖАВ ИКОНКУ МЕССЕНДЖЕРА</h6>
+                        <br>
+                        <div class="social-icons-container">
+                            <ul class="social-icons">
+                                <li>
+                                    <a href="whatsapp://send?text=По ссылке можно подключить бесплатный VPN https://dikiy1111325.github.io/site/index.html" class="bi-whatsapp" target="_blank"></a>
+                                </li>
+                                <li>
+                                    <a href="https://telegram.me/share/url?url=https://dikiy1111325.github.io/site/index.html&text=По ссылке можно подключить бесплатный VPN" class="bi-telegram" target="_blank"></a>
+                                </li>
+                                <li>
+                                    <a href="https://www.instagram.com/?url=https://dikiy1111325.github.io/site/index.html" class="bi-instagram" target="_blank"></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <form class="custom-form" role="form" method="post">
+                            <br>
+                            <h5 class="text-white m-0 me-4">сразу после отправки ссылки занакомым</h5>
+                            <h5 class="text-white m-0 me-4">вам будут доступны настройки VPN сервера</h5>
+                            <br>
+                            <a href="login.html" class="custom-btn custom-border-btn btn">получить настройки для подключения VPN </a>
+                            <br>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="video-wrap">
+                <video autoplay loop muted class="custom-video" poster="images/video-poster.jpg">
+                    <source src="videos/video.mp4" type="video/mp4">
+                    ваш браузер не поддерживает видео
+                </video>
+            </div>
+        </section>
+    </main>
+
+    <!-- JAVASCRIPT FILES -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/init.js"></script>
+    <!-- Подключение скрипта для отслеживания отправки ссылки и разблокировки VPN настроек -->
+    <script src="js/invite-check.js"></script>
+</body>
+</html>
