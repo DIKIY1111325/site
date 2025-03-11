@@ -14,79 +14,6 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/bootstrap-icons.css" rel="stylesheet">
     <link href="css/tooplate-kool-form-pack.css" rel="stylesheet">
-    
-    <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script type="module">
-        import { getSupabaseConfig } from './js/config.js';
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            const { url: supabaseUrl, publicKey: supabaseKey } = getSupabaseConfig();
-            const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-            
-            // Проверка существующей сессии
-            checkSession();
-
-            async function checkSession() {
-                const { data: { session }, error } = await supabase.auth.getSession();
-                if (session) {
-                    // Если пользователь уже авторизован, перенаправляем на главную
-                    window.location.href = 'index.html';
-                }
-            }
-
-            // Обработчики форм
-            document.getElementById('signin-form').addEventListener('submit', handleSignIn);
-            document.getElementById('signup-form').addEventListener('submit', handleSignUp);
-
-            async function handleSignIn(e) {
-                e.preventDefault();
-                const email = document.getElementById('signin-email').value;
-                const password = document.getElementById('signin-password').value;
-                const messageElement = document.getElementById('signin-message');
-
-                try {
-                    const { data: { user }, error } = await supabase.auth.signInWithPassword({
-                        email: email,
-                        password: password
-                    });
-
-                    if (error) throw error;
-
-                    messageElement.textContent = 'Успешная авторизация!';
-                    messageElement.style.color = 'green';
-                    setTimeout(() => window.location.href = 'index.html', 1000);
-
-                } catch (error) {
-                    messageElement.textContent = 'Ошибка: ' + error.message;
-                    messageElement.style.color = 'red';
-                }
-            }
-
-            async function handleSignUp(e) {
-                e.preventDefault();
-                const email = document.getElementById('signup-email').value;
-                const password = document.getElementById('signup-password').value;
-                const messageElement = document.getElementById('signup-message');
-
-                try {
-                    const { data: { user }, error } = await supabase.auth.signUp({
-                        email: email,
-                        password: password
-                    });
-
-                    if (error) throw error;
-
-                    messageElement.textContent = 'Проверьте вашу почту для подтверждения регистрации!';
-                    messageElement.style.color = 'green';
-
-                } catch (error) {
-                    messageElement.textContent = 'Ошибка: ' + error.message;
-                    messageElement.style.color = 'red';
-                }
-            }
-        });
-    </script>
 </head>
 
 <body>
@@ -112,7 +39,7 @@
                 <nav>
                     <ul>
                         <li><a href="index.html">ГЛАВНАЯ</a></li>
-                        <li><a href="login.html">АВТОРИЗАЦИЯ</a></li>
+                        <li><a href="register.html">РЕГИСТРАЦИЯ</a></li>
                         <li><a href="password-reset.html">СБРОСИТЬ ПАРОЛЬ</a></li>
                         <li><a href="invite.html">ПРИГЛАШЕНИЕ ДРУЗЕЙ</a></li>
                         <li><a href="vpn_client.html">ПРИЛОЖЕНИЕ VPN-КЛИЕНТ</a></li>           
@@ -127,88 +54,60 @@
         <section class="hero-section d-flex justify-content-center align-items-center">
             <div class="container">
                 <div class="row">
-                    <div class="col-12 mx-auto">
-                        <div class="row">
-                            <!-- Форма входа -->
-                            <div class="col-lg-6 col-12">
-                                <div class="custom-form contact-form">
-                                    <h2 class="mb-4">Вход в систему</h2>
-                                    <form id="signin-form">
-                                        <div class="row">
-                                            <div class="col-lg-12 col-md-12 col-12">
-                                                <div class="form-floating">
-                                                    <input type="email" name="email" id="signin-email" 
-                                                           class="form-control" required
-                                                           pattern="[a-zA-Z0-9._%+-]{5,}@[a-zA-Z0-9.-]{4,}\.(ru|com|net)$">
-                                                    <label for="signin-email">Email</label>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-12 col-md-12 col-12">
-                                                <div class="form-floating">
-                                                    <input type="password" name="password" id="signin-password" 
-                                                           class="form-control" required
-                                                           pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d\s]{8,}$">
-                                                    <label for="signin-password">Пароль</label>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-12 col-12">
-                                                <p id="signin-message" class="mt-3"></p>
-                                            </div>
-
-                                            <div class="col-lg-4 col-12 ms-auto">
-                                                <button type="submit" class="form-control">Войти</button>
-                                            </div>
+                    <div class="col-12 col-md-8 mx-auto">
+                        <div class="custom-form contact-form">
+                            <h2 class="mb-4">Вход в систему</h2>
+                            <form id="login-form">
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-12">
+                                        <div class="form-floating">
+                                            <input type="email" 
+                                                   name="email" 
+                                                   id="login-email" 
+                                                   class="form-control" 
+                                                   pattern="[a-zA-Z0-9._%+-]{5,}@[a-zA-Z0-9.-]{4,}\.(ru|com|net)$"
+                                                   required>
+                                            <label for="login-email">Email</label>
                                         </div>
-                                    </form>
-                                </div>
-                            </div>
+                                    </div>
 
-                            <!-- Форма регистрации -->
-                            <div class="col-lg-6 col-12">
-                                <div class="custom-form contact-form">
-                                    <h2 class="mb-4">Регистрация</h2>
-                                    <form id="signup-form">
-                                        <div class="row">
-                                            <div class="col-lg-12 col-md-12 col-12">
-                                                <div class="form-floating">
-                                                    <input type="email" name="email" id="signup-email" 
-                                                           class="form-control" required
-                                                           pattern="[a-zA-Z0-9._%+-]{5,}@[a-zA-Z0-9.-]{4,}\.(ru|com|net)$">
-                                                    <label for="signup-email">Email</label>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-12 col-md-12 col-12">
-                                                <div class="form-floating">
-                                                    <input type="password" name="password" id="signup-password" 
-                                                           class="form-control" required
-                                                           pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d\s]{8,}$">
-                                                    <label for="signup-password">Пароль</label>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-12 col-12">
-                                                <div class="form-check mb-4">
-                                                    <input type="checkbox" class="form-check-input" id="signup-terms" required>
-                                                    <label class="form-check-label" for="signup-terms">
-                                                        Я согласен с <a href="#" class="text-primary">условиями использования</a>
-                                                    </label>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-12 col-12">
-                                                <p id="signup-message" class="mt-3"></p>
-                                            </div>
-
-                                            <div class="col-lg-4 col-12 ms-auto">
-                                                <button type="submit" class="form-control">Зарегистрироваться</button>
-                                            </div>
+                                    <div class="col-lg-12 col-md-12 col-12">
+                                        <div class="form-floating">
+                                            <input type="password" 
+                                                   name="password" 
+                                                   id="login-password" 
+                                                   class="form-control"
+                                                   pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$"
+                                                   required>
+                                            <label for="login-password">Пароль</label>
                                         </div>
-                                    </form>
+                                    </div>
+
+                                    <div class="col-lg-12 col-12">
+                                        <p id="login-message" class="mt-3"></p>
+                                    </div>
+
+                                    <div class="col-lg-4 col-12 ms-auto">
+                                        <button type="submit" class="form-control">Войти</button>
+                                    </div>
+
+                                    <div class="col-12 text-center mt-4">
+                                        <p>
+                                            <a href="password-reset.html">Забыли пароль?</a>
+                                        </p>
+                                        <p>
+                                            Нет аккаунта? <a href="register.html">Зарегистрироваться</a>
+                                        </p>
+										 </div>
+            <div class="video-wrap">
+                <video autoplay="" loop="" muted="" class="custom-video" poster="">
+                    <source src="videos/video.mp4" type="video/mp4">
+                    ваш браузер не поддерживает функции видео 
+                </video>
+            </div>
+                                    </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -219,6 +118,8 @@
     <!-- JAVASCRIPT FILES -->
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
-    <script src="js/custom.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js" type="module"></script>
+    <script src="js/login.js" type="module"></script>
 </body>
 </html>
