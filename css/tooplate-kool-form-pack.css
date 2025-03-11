@@ -351,28 +351,54 @@ strong {
 }
 
 /* Social Icons */
-.social-icon {
-    position: relative;
-    display: inline-block;
-    width: 35px;
-    height: 35px;
-    margin: 0 5px;
-    -webkit-transition: all 0.3s ease;
-    -moz-transition: all 0.3s ease;
-    transition: all 0.3s ease;
-}
-
-.social-icon:hover {
-    transform: translateY(-3px);
-    opacity: 0.8;
-}
-
-.social-icon img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
+.social-icons {
+                    display: flex;
+                    list-style: none;
+                    padding: 0;
+                    margin: 0 auto;
+                    align-items: center;
+                    justify-content: space-between;
+                    width: 80%;
+                }
+                
+                .social-icons li {
+                    margin: 0 10px;
+                }
+                
+                .social-icons a {
+                    color: inherit;
+                    text-decoration: none;
+                    font-size: 3em;
+                    transition: color 0.3s ease, transform 0.3s ease;
+                }
+                
+                .social-icons a:hover,
+                .social-icons a:focus {
+                    color: var(--primary-color);
+                    transform: scale(1.1);
+                }
+                
+                .social-icons a:active {
+                    transform: scale(0.9);
+                }
+                /* Стили для WhatsApp при наведении */
+                
+                .social-icons a.bi-whatsapp:hover,
+                .social-icons a.bi-whatsapp:focus {
+                    color: #25D366;
+                    /* Салатовый цвет WhatsApp */
+                    transform: scale(1.1);
+                    /* Увеличение иконки при наведении */
+                }
+                /* Стили для Telegram при наведении */
+                
+                .social-icons a.bi-telegram:hover,
+                .social-icons a.bi-telegram:focus {
+                    color: #0088cc;
+                    /* Голубой цвет, характерный для Telegram */
+                    transform: scale(1.1);
+                    /* Увеличение иконки при наведении */
+                }
 /*---------------------------------------
   RESPONSIVE STYLES               
 -----------------------------------------*/
