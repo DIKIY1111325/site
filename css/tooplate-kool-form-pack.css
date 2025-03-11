@@ -2,7 +2,7 @@
  * Tooplate Kool Form Pack (https://github.com/DIKIY1111325/site)
  * Version: 1.0.0
  * Author: DIKIY1111325
- * Created: 2025-03-11 13:44:38 UTC
+ * Created: 2025-03-11 13:48:18 UTC
  */
 
 :root {
@@ -474,4 +474,4 @@ strong {
 /* Form Focus States */
 .form-control:focus {
     border-width: 2px;
-    box-shadow: 0 0 0 0.2
+    box-shadow: 0 0 0 0.
