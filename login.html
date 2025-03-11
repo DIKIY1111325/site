@@ -3,10 +3,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="АВТОРИЗАЦИЯ личный, персональный, VPN СЕРВЕР, аренда, VPN, XRAY, V2RAY, VLESS, VMESS, XTLS">
-    <meta name="author" content="vpn, xray, vless">
-    <title>АВТОРИЗАЦИЯ ПЕРСОНАЛЬНЫЙ VPN СЕРВИС</title>
-    
+    <meta name="description" content="Авторизация VPN">
+    <meta name="author" content="vpn, xray, vless, бесплатно">
+    <title>Авторизация VPN</title>
+
     <!-- CSS FILES -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,7 +16,77 @@
     <link href="css/tooplate-kool-form-pack.css" rel="stylesheet">
     
     <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module">
+        import { getSupabaseConfig } from './js/config.js';
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const { url: supabaseUrl, publicKey: supabaseKey } = getSupabaseConfig();
+            const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+            
+            // Проверка существующей сессии
+            checkSession();
+
+            async function checkSession() {
+                const { data: { session }, error } = await supabase.auth.getSession();
+                if (session) {
+                    // Если пользователь уже авторизован, перенаправляем на главную
+                    window.location.href = 'index.html';
+                }
+            }
+
+            // Обработчики форм
+            document.getElementById('signin-form').addEventListener('submit', handleSignIn);
+            document.getElementById('signup-form').addEventListener('submit', handleSignUp);
+
+            async function handleSignIn(e) {
+                e.preventDefault();
+                const email = document.getElementById('signin-email').value;
+                const password = document.getElementById('signin-password').value;
+                const messageElement = document.getElementById('signin-message');
+
+                try {
+                    const { data: { user }, error } = await supabase.auth.signInWithPassword({
+                        email: email,
+                        password: password
+                    });
+
+                    if (error) throw error;
+
+                    messageElement.textContent = 'Успешная авторизация!';
+                    messageElement.style.color = 'green';
+                    setTimeout(() => window.location.href = 'index.html', 1000);
+
+                } catch (error) {
+                    messageElement.textContent = 'Ошибка: ' + error.message;
+                    messageElement.style.color = 'red';
+                }
+            }
+
+            async function handleSignUp(e) {
+                e.preventDefault();
+                const email = document.getElementById('signup-email').value;
+                const password = document.getElementById('signup-password').value;
+                const messageElement = document.getElementById('signup-message');
+
+                try {
+                    const { data: { user }, error } = await supabase.auth.signUp({
+                        email: email,
+                        password: password
+                    });
+
+                    if (error) throw error;
+
+                    messageElement.textContent = 'Проверьте вашу почту для подтверждения регистрации!';
+                    messageElement.style.color = 'green';
+
+                } catch (error) {
+                    messageElement.textContent = 'Ошибка: ' + error.message;
+                    messageElement.style.color = 'red';
+                }
+            }
+        });
+    </script>
 </head>
 
 <body>
@@ -28,7 +98,7 @@
                     <span>ПЕРСОНАЛЬНЫЙ VPN СЕРВИС | СЕРВЕР</span>
                 </a>
                 <div class="share-text">
-                    <span>ЗА НЕСКОЛЬКО КЛИКОВ</span>
+                    <span><h6>ЗА НЕСКОЛЬКО КЛИКОВ</h6></span>
                 </div>
                 <a class="offcanvas-icon" data-bs-toggle="offcanvas" href="#offcanvasMenu" role="button" aria-controls="offcanvasMenu">УЗНАТЬ ПОДРОБНЕЕ</a>
             </div>
@@ -45,14 +115,10 @@
                         <li><a href="login.html">АВТОРИЗАЦИЯ</a></li>
                         <li><a href="password-reset.html">СБРОСИТЬ ПАРОЛЬ</a></li>
                         <li><a href="invite.html">ПРИГЛАШЕНИЕ ДРУЗЕЙ</a></li>
-                        <li><a href="vpn_client.html">ПРИЛОЖЕНИЕ VPN-КЛИЕНТ</a></li>
+                        <li><a href="vpn_client.html">ПРИЛОЖЕНИЕ VPN-КЛИЕНТ</a></li>           
                         <li><a href="subscription.html">ТАРИФЫ</a></li>
                         <li><a href="pay.html">ОПЛАТА</a></li>
                         <li><a href="contact.html">ЗАДАТЬ ВОПРОС</a></li>
-                        <li><a href="faq1_vpn_serv.html">БЕЗОПАСНОСТЬ ДАННЫХ</a></li>
-                        <li><a href="faq2_vpn_serv.html">УСТОЙЧИВОСТЬ К БЛОКИРОВКАМ</a></li>
-                        <li><a href="faq3_vpn_serv.html">ЛЕГКОЕ УПРАВЛЕНИЕ</a></li>
-                        <li><a href="faq4_vpn_serv.html">ПЕРСОНАЛЬНЫЙ VPN</a></li>
                     </ul>
                 </nav>
             </div>
@@ -61,57 +127,91 @@
         <section class="hero-section d-flex justify-content-center align-items-center">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-6 col-12 mx-auto text-center">
-                        <h5 class="text-white m-0 me-4">ЗАРЕГИСТРИРУЙТЕСЬ</h5>
-                        <h6 class="text-white m-0 me-4">ИЛИ</h6>
-                        <h5 class="text-white m-0 me-4">АВТОРИЗУЙТЕСЬ</h5>
-                        
-                        <form id="auth-form" class="custom-form" role="form">
-                            <div class="form-floating mt-4">
-                                <input type="name" name="name" id="name" class="form-control" placeholder="Ваше имя" required>
-                                <label for="name">Ваше имя</label>
-                            </div>
+                    <div class="col-12 mx-auto">
+                        <div class="row">
+                            <!-- Форма входа -->
+                            <div class="col-lg-6 col-12">
+                                <div class="custom-form contact-form">
+                                    <h2 class="mb-4">Вход в систему</h2>
+                                    <form id="signin-form">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-12">
+                                                <div class="form-floating">
+                                                    <input type="email" name="email" id="signin-email" 
+                                                           class="form-control" required
+                                                           pattern="[a-zA-Z0-9._%+-]{5,}@[a-zA-Z0-9.-]{4,}\.(ru|com|net)$">
+                                                    <label for="signin-email">Email</label>
+                                                </div>
+                                            </div>
 
-                            <div class="form-floating mt-4">
-                                <input type="email" name="email" id="email" class="form-control" placeholder="Ваш Email" required>
-                                <label for="email">Ваш Email</label>
-                            </div>
+                                            <div class="col-lg-12 col-md-12 col-12">
+                                                <div class="form-floating">
+                                                    <input type="password" name="password" id="signin-password" 
+                                                           class="form-control" required
+                                                           pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d\s]{8,}$">
+                                                    <label for="signin-password">Пароль</label>
+                                                </div>
+                                            </div>
 
-                            <div class="form-floating mt-3">
-                                <input type="tel" name="phone" id="phone" class="form-control" placeholder="Ваш номер телефона" required>
-                                <label for="phone">Ваш номер телефона</label>
-                            </div>
+                                            <div class="col-lg-12 col-12">
+                                                <p id="signin-message" class="mt-3"></p>
+                                            </div>
 
-                            <div class="form-floating mt-3">
-                                <input type="password" name="password" id="password" class="form-control" placeholder="Пароль" required>
-                                <label for="password">Пароль</label>
-                            </div>
-
-                            <div class="form-check mt-3 d-flex justify-content-between align-items-center">
-                                <div>
-                                    <input class="form-check-input" type="checkbox" id="termsCheck" required>
-                                    <label class="form-check-label" for="termsCheck">
-                                        Я согласен с <a href="vpn_client.html">условиями использования</a>
-                                    </label>
+                                            <div class="col-lg-4 col-12 ms-auto">
+                                                <button type="submit" class="form-control">Войти</button>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
-                                <a href="password-reset.html" class="forgot-password">вспомнить пароль</a>
                             </div>
 
-                            <div class="text-center mt-4">
-                                <button type="submit" class="form-control custom-btn custom-border-btn btn btn-wide">ПРОДОЛЖИТЬ</button>
+                            <!-- Форма регистрации -->
+                            <div class="col-lg-6 col-12">
+                                <div class="custom-form contact-form">
+                                    <h2 class="mb-4">Регистрация</h2>
+                                    <form id="signup-form">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-12">
+                                                <div class="form-floating">
+                                                    <input type="email" name="email" id="signup-email" 
+                                                           class="form-control" required
+                                                           pattern="[a-zA-Z0-9._%+-]{5,}@[a-zA-Z0-9.-]{4,}\.(ru|com|net)$">
+                                                    <label for="signup-email">Email</label>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-12 col-md-12 col-12">
+                                                <div class="form-floating">
+                                                    <input type="password" name="password" id="signup-password" 
+                                                           class="form-control" required
+                                                           pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d\s]{8,}$">
+                                                    <label for="signup-password">Пароль</label>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-12 col-12">
+                                                <div class="form-check mb-4">
+                                                    <input type="checkbox" class="form-check-input" id="signup-terms" required>
+                                                    <label class="form-check-label" for="signup-terms">
+                                                        Я согласен с <a href="#" class="text-primary">условиями использования</a>
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-12 col-12">
+                                                <p id="signup-message" class="mt-3"></p>
+                                            </div>
+
+                                            <div class="col-lg-4 col-12 ms-auto">
+                                                <button type="submit" class="form-control">Зарегистрироваться</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
-                        </form>
-                        
-                        <div id="message" class="text-white mt-3"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="video-wrap">
-                <video autoplay loop muted class="custom-video" poster="images/video-poster.jpg">
-                    <source src="videos/video.mp4" type="video/mp4">
-                    браузер не поддерживает видео
-                </video>
             </div>
         </section>
     </main>
@@ -119,6 +219,6 @@
     <!-- JAVASCRIPT FILES -->
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
-    <script src="js/login-check.js" type="module"></script>
+    <script src="js/custom.js"></script>
 </body>
 </html>
