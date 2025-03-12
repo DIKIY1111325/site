@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход | RCE monitoring</title>
+    
+    <!-- Стили -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- Подключение Supabase -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://dsvaqphuagrnkjmthtet.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzdmFxcGh1YWdybmtqbXRodGV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDExNjUwMTQsImV4cCI6MjA1Njc0MTAxNH0.7p5J2VlCie9lWoUrm1YkMdSeEkRadB4b7vROMlPexsY
+'; // ваш публичный ключ
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    </script>
+
+    <!-- Дополнительные стили для чекбокса и меток -->
+    <style>
+        .consent-container {
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .consent-checkbox {
+            margin-right: 10px;
+        }
+        
+        .consent-text {
+            color: #fff;
+            font-size: 14px;
+        }
+        
+        .consent-text a {
+            color: #007bff;
+            text-decoration: underline;
+        }
+        
+        .consent-text a:hover {
+            color: #0056b3;
+        }
+        
+        .error-message {
+            color: #ff4444;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .user-tracking {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Видео фон -->
+    <video autoplay muted loop id="myVideo">
+        <source src="videos/video-bg.mp4" type="video/mp4">
+    </video>
+
+    <div class="container">
+        <div class="login-form">
+            <h2>Вход в систему</h2>
+            
+            <!-- Форма входа -->
+            <form id="loginForm" onsubmit="return handleLogin(event)">
+                <div class="form-group">
+                    <input type="email" id="email" class="form-control" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" class="form-control" placeholder="Пароль" required>
+                </div>
+                
+                <!-- Чекбокс согласия -->
+                <div class="consent-container">
+                    <label class="consent-label">
+                        <input type="checkbox" id="consentCheckbox" class="consent-checkbox" required>
+                        <span class="consent-text">
+                            Я согласен с <a href="faq1_vpn_serv.html" target="_blank">условиями использования</a> сервиса
+                        </span>
+                    </label>
+                    <div id="consentError" class="error-message">
+                        Необходимо согласиться с условиями использования
+                    </div>
+                </div>
+
+                <!-- Скрытое поле для метки пользователя -->
+                <input type="hidden" id="userTrackingId" class="user-tracking">
+                
+                <button type="submit" class="btn btn-primary btn-block">Войти</button>
+            </form>
+
+            <div class="links">
+                <a href="register.html">Регистрация</a>
+                <a href="password-reset.html">Забыли пароль?</a>
+            </div>
+        </div>
+    </div>

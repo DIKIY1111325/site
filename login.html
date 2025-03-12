@@ -1,103 +1,126 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вход | RCE monitoring</title>
-    
-    <!-- Стили -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/styles.css">
-    
-    <!-- Подключение Supabase -->
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script>
-        const SUPABASE_URL = 'https://dsvaqphuagrnkjmthtet.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzdmFxcGh1YWdybmtqbXRodGV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDExNjUwMTQsImV4cCI6MjA1Njc0MTAxNH0.7p5J2VlCie9lWoUrm1YkMdSeEkRadB4b7vROMlPexsY
-'; // ваш публичный ключ
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    </script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Авторизация VPN">
+    <meta name="author" content="vpn, xray, vless, бесплатно">
+    <title>Авторизация VPN</title>
 
-    <!-- Дополнительные стили для чекбокса и меток -->
-    <style>
-        .consent-container {
-            margin: 15px 0;
-            padding: 10px;
-            border-radius: 5px;
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .consent-checkbox {
-            margin-right: 10px;
-        }
-        
-        .consent-text {
-            color: #fff;
-            font-size: 14px;
-        }
-        
-        .consent-text a {
-            color: #007bff;
-            text-decoration: underline;
-        }
-        
-        .consent-text a:hover {
-            color: #0056b3;
-        }
-        
-        .error-message {
-            color: #ff4444;
-            font-size: 14px;
-            margin-top: 5px;
-            display: none;
-        }
-        
-        .user-tracking {
-            display: none;
-        }
-    </style>
+    <!-- CSS FILES -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,400;0,700&family=Unbounded:wght@400;700&display=swap" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/tooplate-kool-form-pack.css" rel="stylesheet">
 </head>
+
 <body>
-    <!-- Видео фон -->
-    <video autoplay muted loop id="myVideo">
-        <source src="videos/video-bg.mp4" type="video/mp4">
-    </video>
-
-    <div class="container">
-        <div class="login-form">
-            <h2>Вход в систему</h2>
-            
-            <!-- Форма входа -->
-            <form id="loginForm" onsubmit="return handleLogin(event)">
-                <div class="form-group">
-                    <input type="email" id="email" class="form-control" placeholder="Email" required>
+    <main>
+        <header class="site-header">
+            <div class="container">
+                <a class="site-header-text" href="index.html">
+                    <i class="bi-box"></i>
+                    <span>ПЕРСОНАЛЬНЫЙ VPN СЕРВИС | СЕРВЕР</span>
+                </a>
+                <div class="share-text">
+                    <span><h6>ЗА НЕСКОЛЬКО КЛИКОВ</h6></span>
                 </div>
-                <div class="form-group">
-                    <input type="password" id="password" class="form-control" placeholder="Пароль" required>
-                </div>
-                
-                <!-- Чекбокс согласия -->
-                <div class="consent-container">
-                    <label class="consent-label">
-                        <input type="checkbox" id="consentCheckbox" class="consent-checkbox" required>
-                        <span class="consent-text">
-                            Я согласен с <a href="faq1_vpn_serv.html" target="_blank">условиями использования</a> сервиса
-                        </span>
-                    </label>
-                    <div id="consentError" class="error-message">
-                        Необходимо согласиться с условиями использования
-                    </div>
-                </div>
+                <a class="offcanvas-icon" data-bs-toggle="offcanvas" href="#offcanvasMenu" role="button" aria-controls="offcanvasMenu">УЗНАТЬ ПОДРОБНЕЕ</a>
+            </div>
+        </header>
 
-                <!-- Скрытое поле для метки пользователя -->
-                <input type="hidden" id="userTrackingId" class="user-tracking">
-                
-                <button type="submit" class="btn btn-primary btn-block">Войти</button>
-            </form>
-
-            <div class="links">
-                <a href="register.html">Регистрация</a>
-                <a href="password-reset.html">Забыли пароль?</a>
+        <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
+            <div class="offcanvas-header">
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body d-flex flex-column justify-content-center align-items-center">
+                <nav>
+                    <ul>
+                        <li><a href="index.html">ГЛАВНАЯ</a></li>
+                        <li><a href="register.html">РЕГИСТРАЦИЯ</a></li>
+                        <li><a href="password-reset.html">СБРОСИТЬ ПАРОЛЬ</a></li>
+                        <li><a href="invite.html">ПРИГЛАШЕНИЕ ДРУЗЕЙ</a></li>
+                        <li><a href="vpn_client.html">ПРИЛОЖЕНИЕ VPN-КЛИЕНТ</a></li>           
+                        <li><a href="subscription.html">ТАРИФЫ</a></li>
+                        <li><a href="pay.html">ОПЛАТА</a></li>
+                        <li><a href="contact.html">ЗАДАТЬ ВОПРОС</a></li>
+                    </ul>
+                </nav>
             </div>
         </div>
-    </div>
+
+        <section class="hero-section d-flex justify-content-center align-items-center">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 col-md-8 mx-auto">
+                        <div class="custom-form contact-form">
+                            <h2 class="mb-4">Вход в систему</h2>
+                            <form id="login-form">
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-12">
+                                        <div class="form-floating">
+                                            <input type="email" 
+                                                   name="email" 
+                                                   id="login-email" 
+                                                   class="form-control" 
+                                                   pattern="[a-zA-Z0-9._%+-]{5,}@[a-zA-Z0-9.-]{4,}\.(ru|com|net)$"
+                                                   required>
+                                            <label for="login-email">Email</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-12 col-md-12 col-12">
+                                        <div class="form-floating">
+                                            <input type="password" 
+                                                   name="password" 
+                                                   id="login-password" 
+                                                   class="form-control"
+                                                   pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$"
+                                                   required>
+                                            <label for="login-password">Пароль</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-12 col-12">
+                                        <p id="login-message" class="mt-3"></p>
+                                    </div>
+
+                                    <div class="col-lg-4 col-12 ms-auto">
+                                        <button type="submit" class="form-control">Войти</button>
+                                    </div>
+
+                                    <div class="col-12 text-center mt-4">
+                                        <p>
+                                            <a href="password-reset.html">Забыли пароль?</a>
+                                        </p>
+                                        <p>
+                                            Нет аккаунта? <a href="register.html">Зарегистрироваться</a>
+                                        </p>
+										 </div>
+            <div class="video-wrap">
+                <video autoplay="" loop="" muted="" class="custom-video" poster="">
+                    <source src="videos/video.mp4" type="video/mp4">
+                    ваш браузер не поддерживает функции видео 
+                </video>
+            </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- JAVASCRIPT FILES -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js" type="module"></script>
+    <script src="js/login.js" type="module"></script>
+	
+</body>
+</html>
