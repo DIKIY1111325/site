@@ -1,7 +1,8 @@
-// Импорт менеджера аутентификации
+// Импорт необходимых зависимостей
 import authManager from './auth.js';
+import { supabaseClient } from './supabase.js';
 
-// Объявление основных функций
+// Основные функции для отображения сообщений и состояния загрузки
 const showMessage = (message, isError = false) => {
     const messageElement = document.getElementById('login-message');
     messageElement.textContent = message;
@@ -16,7 +17,7 @@ const clearMessage = () => {
 };
 
 const toggleLoadingState = (isLoading) => {
-    const elements = ['login-submit', 'login-email', 'login-password', 'remember-me'];
+    const elements = ['login-submit', 'login-email', 'login-password'];
     elements.forEach(id => {
         const element = document.getElementById(id);
         if (element) {
@@ -33,60 +34,57 @@ const handleNetworkError = (error) => {
     showMessage('Проблема с подключением к серверу. Проверьте интернет-соединение.', true);
 };
 
-// Основной обработчик загрузки страницы
-document.addEventListener('DOMContentLoaded', () => {
-    // Получение элементов формы
-    const loginForm = document.getElementById('login-form');
-    const emailInput = document.getElementById('login-email');
-    const passwordInput = document.getElementById('login-password');
-    const rememberMeCheckbox = document.getElementById('remember-me');
-    const passwordToggle = document.getElementById('toggle-password');
-
-    // Обработчик переключения видимости пароля
-    if (passwordToggle) {
-        passwordToggle.addEventListener('click', () => {
-            const type = passwordInput.type === 'password' ? 'text' : 'password';
-            passwordInput.type = type;
-            passwordToggle.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
-        });
+// Функции для работы с локальным хранилищем
+const saveLastUsedEmail = (email, remember) => {
+    if (remember) {
+        localStorage.setItem('lastUsedEmail', email);
+    } else {
+        localStorage.removeItem('lastUsedEmail');
     }
-	    // Валидация email в реальном времени
-    emailInput?.addEventListener('input', () => {
-        const email = emailInput.value.trim();
-        const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-        emailInput.style.borderColor = email ? (isValid ? 'green' : 'red') : '#ccc';
-    });
+};
 
-    // Валидация пароля в реальном времени
-    passwordInput?.addEventListener('input', () => {
-        const password = passwordInput.value;
-        const isValid = authManager.validatePassword(password);
-        passwordInput.style.borderColor = password ? (isValid ? 'green' : 'red') : '#ccc';
-    });
-
-    // Функции для работы с email
-    const saveLastUsedEmail = (email) => {
-        if (rememberMeCheckbox.checked) {
-            localStorage.setItem('lastUsedEmail', email);
-        } else {
-            localStorage.removeItem('lastUsedEmail');
+const restoreLastUsedEmail = (emailInput) => {
+    const savedEmail = localStorage.getItem('lastUsedEmail');
+    if (savedEmail && emailInput) {
+        emailInput.value = savedEmail;
+        const rememberCheckbox = document.getElementById('remember-me');
+        if (rememberCheckbox) {
+            rememberCheckbox.checked = true;
         }
-    };
+    }
+};
 
-    const restoreLastUsedEmail = () => {
-        const savedEmail = localStorage.getItem('lastUsedEmail');
-        if (savedEmail && emailInput) {
-            emailInput.value = savedEmail;
-            rememberMeCheckbox.checked = true;
-        }
-    };
+// Валидация данных формы
+const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) {
+        return { isValid: false, message: 'Email обязателен' };
+    }
+    if (!emailRegex.test(email)) {
+        return { isValid: false, message: 'Некорректный формат email' };
+    }
+    return { isValid: true };
+};
 
-    // Таймер неактивности
-    const resetInactivityTimer = () => {
-        if (window.inactivityTimeout) {
-            clearTimeout(window.inactivityTimeout);
+const validatePassword = (password) => {
+    if (!password) {
+        return { isValid: false, message: 'Пароль обязателен' };
+    }
+    if (password.length < 8) {
+        return { isValid: false, message: 'Пароль должен быть не менее 8 символов' };
+    }
+    return { isValid: true };
+};
+
+// Настройка таймера неактивности
+const setupInactivityTimer = () => {
+    let inactivityTimeout;
+
+    const resetTimer = () => {
+        if (inactivityTimeout) {
+            clearTimeout(inactivityTimeout);
         }
-        window.inactivityTimeout = setTimeout(() => {
+        inactivityTimeout = setTimeout(() => {
             if (authManager.isAuthenticated()) {
                 authManager.logout();
                 showMessage('Сессия завершена из-за неактивности', true);
@@ -94,82 +92,53 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 30 * 60 * 1000); // 30 минут
     };
 
-    // Отслеживание активности пользователя
-    ['mousedown', 'keydown', 'scroll', 'touchstart'].forEach(eventType => {
-        document.addEventListener(eventType, resetInactivityTimer);
+    ['mousedown', 'keydown', 'scroll', 'touchstart'].forEach(event => {
+        document.addEventListener(event, resetTimer);
     });
 
-    // Валидация полей
-    const getValidationErrors = (email, password) => {
-        const errors = [];
-        
-        if (!email) {
-            errors.push('Email обязателен');
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            errors.push('Некорректный формат email');
+    resetTimer();
+    return () => {
+        if (inactivityTimeout) {
+            clearTimeout(inactivityTimeout);
         }
-
-        if (!password) {
-            errors.push('Пароль обязателен');
-        } else if (!authManager.validatePassword(password)) {
-            errors.push('Пароль должен содержать минимум 8 символов, включая заглавные и строчные буквы, цифры и специальные символы');
-        }
-
-        return errors;
     };
-	    // Обработка формы входа
-    loginForm?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        clearMessage();
+};
+// Обработка формы входа и инициализация страницы
+document.addEventListener('DOMContentLoaded', () => {
+    // Получение элементов формы
+    const loginForm = document.getElementById('login-form');
+    const emailInput = document.getElementById('login-email');
+    const passwordInput = document.getElementById('login-password');
+    const rememberMeCheckbox = document.getElementById('remember-me');
 
-        const email = emailInput?.value.trim();
-        const password = passwordInput?.value;
-        const remember = rememberMeCheckbox?.checked || false;
-
-        // Проверка валидации
-        const errors = getValidationErrors(email, password);
-        if (errors.length > 0) {
-            showMessage(errors.join('\n'), true);
-            return;
+    // Настройка переключателя видимости пароля
+    const setupPasswordToggle = () => {
+        const passwordToggle = document.getElementById('toggle-password');
+        if (passwordToggle && passwordInput) {
+            passwordToggle.addEventListener('click', () => {
+                const type = passwordInput.type === 'password' ? 'text' : 'password';
+                passwordInput.type = type;
+                passwordToggle.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
+            });
         }
+    };
 
-        try {
-            toggleLoadingState(true);
+    // Настройка валидации в реальном времени
+    const setupRealTimeValidation = () => {
+        emailInput?.addEventListener('input', () => {
+            const email = emailInput.value.trim();
+            const { isValid } = validateEmail(email);
+            emailInput.style.borderColor = email ? (isValid ? 'green' : 'red') : '#ccc';
+        });
 
-            // Проверка ограничений на попытки входа
-            await authManager.canAttemptLogin(email);
+        passwordInput?.addEventListener('input', () => {
+            const password = passwordInput.value;
+            const { isValid } = validatePassword(password);
+            passwordInput.style.borderColor = password ? (isValid ? 'green' : 'red') : '#ccc';
+        });
+    };
 
-            // Попытка входа
-            const result = await authManager.login(email, password, remember);
-
-            if (!result.success) {
-                await authManager.handleFailedLogin(email);
-                throw new Error(result.error || 'Ошибка входа');
-            }
-
-            // Обработка успешного входа
-            saveLastUsedEmail(email);
-            await updateSecurityMetrics(email, true);
-            showMessage('Вход выполнен успешно!');
-            
-            // Задержка перед редиректом
-            setTimeout(() => {
-                window.location.href = 'dashboard.html';
-            }, 1500);
-
-        } catch (error) {
-            await updateSecurityMetrics(email, false);
-            if (error.name === 'NetworkError' || !navigator.onLine) {
-                handleNetworkError(error);
-            } else {
-                showMessage(error.message, true);
-            }
-        } finally {
-            toggleLoadingState(false);
-        }
-    });
-
-    // Метрики безопасности
+    // Обновление метрик безопасности
     const updateSecurityMetrics = async (email, success) => {
         try {
             const metrics = JSON.parse(localStorage.getItem('security_metrics') || '{}');
@@ -180,11 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             metrics[today].attempts++;
-            if (success) {
-                metrics[today].successes++;
-            } else {
-                metrics[today].failures++;
-            }
+            metrics[today][success ? 'successes' : 'failures']++;
 
             localStorage.setItem('security_metrics', JSON.stringify(metrics));
         } catch (error) {
@@ -192,136 +157,151 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Проверка подписки пользователя
+    const checkUserSubscription = async (userId) => {
+        try {
+            const { data: subscription, error } = await supabaseClient
+                .from('subscriptions')
+                .select('status, plan')
+                .eq('user_id', userId)
+                .single();
+
+            if (error) throw error;
+            return subscription;
+        } catch (error) {
+            console.error('Error checking subscription:', error);
+            return null;
+        }
+    };
+
+    // Определение страницы для перенаправления
+    const getRedirectPage = (subscription) => {
+        if (document.referrer.includes('invite.html')) {
+            return 'vpn_client.html';
+        }
+        
+        if (subscription?.status === 'active') {
+            return 'dashboard.html';
+        }
+        
+        return 'subscription.html';
+    };
+
     // Инициализация страницы
     const initializePage = () => {
-        restoreLastUsedEmail();
-        resetInactivityTimer();
-        
-        // Проверка предыдущей сессии
+        setupPasswordToggle();
+        setupRealTimeValidation();
+        restoreLastUsedEmail(emailInput);
+        const cleanup = setupInactivityTimer();
+
+        // Проверка текущей сессии
         if (authManager.isAuthenticated()) {
             window.location.href = 'dashboard.html';
             return;
         }
 
-        // Проверка параметров URL для сообщений
+        return cleanup;
+    };
+	    // Обработчик отправки формы
+    loginForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearMessage();
+
+        const email = emailInput?.value.trim();
+        const password = passwordInput?.value;
+        const remember = rememberMeCheckbox?.checked || false;
+
+        // Валидация формы
+        const emailValidation = validateEmail(email);
+        const passwordValidation = validatePassword(password);
+
+        if (!emailValidation.isValid) {
+            showMessage(emailValidation.message, true);
+            return;
+        }
+
+        if (!passwordValidation.isValid) {
+            showMessage(passwordValidation.message, true);
+            return;
+        }
+
+        try {
+            toggleLoadingState(true);
+
+            // Проверка ограничений на попытки входа
+            const canAttempt = await authManager.canAttemptLogin(email);
+            if (!canAttempt) {
+                throw new Error('Слишком много попыток входа. Попробуйте позже.');
+            }
+
+            // Попытка входа
+            const { data, error } = await supabaseClient.auth.signInWithPassword({
+                email,
+                password
+            });
+
+            if (error) {
+                await authManager.handleFailedLogin(email);
+                throw error;
+            }
+
+            // Сохранение email если выбрано "запомнить меня"
+            saveLastUsedEmail(email, remember);
+
+            // Проверка подписки
+            const subscription = await checkUserSubscription(data.user.id);
+            
+            // Обновление метрик безопасности
+            await updateSecurityMetrics(email, true);
+            
+            // Показ сообщения об успехе
+            showMessage('Вход выполнен успешно!');
+
+            // Редирект на соответствующую страницу
+            const redirectPage = getRedirectPage(subscription);
+            setTimeout(() => {
+                window.location.href = redirectPage;
+            }, 1500);
+
+        } catch (error) {
+            await updateSecurityMetrics(email, false);
+            
+            if (!navigator.onLine || error.name === 'NetworkError') {
+                handleNetworkError(error);
+            } else {
+                showMessage(error.message, true);
+            }
+        } finally {
+            toggleLoadingState(false);
+        }
+    });
+
+    // Проверка параметров URL для сообщений
+    const checkUrlMessages = () => {
         const urlParams = new URLSearchParams(window.location.search);
         const message = urlParams.get('message');
         if (message) {
-            showMessage(decodeURIComponent(message), 
-                       urlParams.get('error') === 'true');
+            showMessage(
+                decodeURIComponent(message),
+                urlParams.get('error') === 'true'
+            );
         }
     };
 
-    // Инициализация всех обработчиков и настроек
-    initializePage();
+    // Инициализация страницы и настройка очистки
+    const cleanup = initializePage();
+    checkUrlMessages();
 
     // Очистка при выходе со страницы
     window.addEventListener('beforeunload', () => {
-        if (window.inactivityTimeout) {
-            clearTimeout(window.inactivityTimeout);
-        }
-		// Функция для генерации уникальной метки пользователя
-function generateTrackingId() {
-    return 'track_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
-}
-
-// Функция для сохранения метки в localStorage
-function saveTrackingId(trackingId) {
-    localStorage.setItem('userTrackingId', trackingId);
-}
-
-// Функция для получения метки из localStorage
-function getTrackingId() {
-    let trackingId = localStorage.getItem('userTrackingId');
-    if (!trackingId) {
-        trackingId = generateTrackingId();
-        saveTrackingId(trackingId);
-    }
-    return trackingId;
-}
-
-// Функция проверки подписки пользователя
-async function checkUserSubscription(userId) {
-    try {
-        const { data: subscriptionData, error } = await supabase
-            .from('subscriptions')
-            .select('plan, status')
-            .eq('user_id', userId)
-            .single();
-
-        if (error) throw error;
-        return subscriptionData;
-    } catch (error) {
-        console.error('Ошибка при проверке подписки:', error.message);
-        return null;
-    }
-}
-
-// Функция определения страницы для перенаправления
-function getRedirectPage(subscriptionData) {
-    const referrer = document.referrer;
-    
-    // Если пользователь пришел со страницы invite
-    if (referrer.includes('invite.html')) {
-        return 'vpn_client.html';
-    }
-    
-    // Если у пользователя есть активная подписка
-    if (subscriptionData && subscriptionData.status === 'active') {
-        return 'subscription.html';
-    }
-    
-    // По умолчанию
-    return 'index.html';
-}
-
-// Основная функция обработки входа
-async function handleLogin(event) {
-    event.preventDefault();
-
-    // Проверка чекбокса
-    const consentCheckbox = document.getElementById('consentCheckbox');
-    const consentError = document.getElementById('consentError');
-    
-    if (!consentCheckbox.checked) {
-        consentError.style.display = 'block';
-        return false;
-    }
-    consentError.style.display = 'none';
-
-    // Получаем данные формы
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    try {
-        // Авторизация через Supabase
-        const { data: { user }, error } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: password
-        });
-
-        if (error) throw error;
-
-        // Обновляем метку пользователя
-        const trackingId = getTrackingId();
-        document.getElementById('userTrackingId').value = trackingId;
-
-        // Проверяем подписку
-        const subscriptionData = await checkUserSubscription(user.id);
-
-        // Определяем страницу для перенаправления
-        const redirectPage = getRedirectPage(subscriptionData);
-
-        // Перенаправляем пользователя
-        window.location.href = redirectPage;
-
-    } catch (error) {
-        alert('Ошибка при входе: ' + error.message);
-    }
-
-    return false;
-}
+        cleanup?.();
     });
 });
 
-	
+// Экспорт необходимых функций для тестирования
+export {
+    validateEmail,
+    validatePassword,
+    showMessage,
+    clearMessage
+};
