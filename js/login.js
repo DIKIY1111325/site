@@ -220,6 +220,107 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.inactivityTimeout) {
             clearTimeout(window.inactivityTimeout);
         }
+		// Функция для генерации уникальной метки пользователя
+function generateTrackingId() {
+    return 'track_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+}
+
+// Функция для сохранения метки в localStorage
+function saveTrackingId(trackingId) {
+    localStorage.setItem('userTrackingId', trackingId);
+}
+
+// Функция для получения метки из localStorage
+function getTrackingId() {
+    let trackingId = localStorage.getItem('userTrackingId');
+    if (!trackingId) {
+        trackingId = generateTrackingId();
+        saveTrackingId(trackingId);
+    }
+    return trackingId;
+}
+
+// Функция проверки подписки пользователя
+async function checkUserSubscription(userId) {
+    try {
+        const { data: subscriptionData, error } = await supabase
+            .from('subscriptions')
+            .select('plan, status')
+            .eq('user_id', userId)
+            .single();
+
+        if (error) throw error;
+        return subscriptionData;
+    } catch (error) {
+        console.error('Ошибка при проверке подписки:', error.message);
+        return null;
+    }
+}
+
+// Функция определения страницы для перенаправления
+function getRedirectPage(subscriptionData) {
+    const referrer = document.referrer;
+    
+    // Если пользователь пришел со страницы invite
+    if (referrer.includes('invite.html')) {
+        return 'vpn_client.html';
+    }
+    
+    // Если у пользователя есть активная подписка
+    if (subscriptionData && subscriptionData.status === 'active') {
+        return 'subscription.html';
+    }
+    
+    // По умолчанию
+    return 'index.html';
+}
+
+// Основная функция обработки входа
+async function handleLogin(event) {
+    event.preventDefault();
+
+    // Проверка чекбокса
+    const consentCheckbox = document.getElementById('consentCheckbox');
+    const consentError = document.getElementById('consentError');
+    
+    if (!consentCheckbox.checked) {
+        consentError.style.display = 'block';
+        return false;
+    }
+    consentError.style.display = 'none';
+
+    // Получаем данные формы
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    try {
+        // Авторизация через Supabase
+        const { data: { user }, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+
+        if (error) throw error;
+
+        // Обновляем метку пользователя
+        const trackingId = getTrackingId();
+        document.getElementById('userTrackingId').value = trackingId;
+
+        // Проверяем подписку
+        const subscriptionData = await checkUserSubscription(user.id);
+
+        // Определяем страницу для перенаправления
+        const redirectPage = getRedirectPage(subscriptionData);
+
+        // Перенаправляем пользователя
+        window.location.href = redirectPage;
+
+    } catch (error) {
+        alert('Ошибка при входе: ' + error.message);
+    }
+
+    return false;
+}
     });
 });
 
