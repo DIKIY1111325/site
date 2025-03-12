@@ -1,132 +1,226 @@
-import { supabase, showErrorMessage } from './supabase.js';
+// Импорт менеджера аутентификации
+import authManager from './auth.js';
 
-// Константы для защиты от брутфорса
-const MAX_LOGIN_ATTEMPTS = 5;
-const LOCKOUT_TIME = 15 * 60 * 1000; // 15 минут
-
-// Разрешенные редиректы
-const ALLOWED_REDIRECTS = {
-    'vpn_quick': 'invite.html',
-    'vpn_paid': 'faq3_vpn_serv.html',
-    'personal_vpn': 'faq4_vpn_serv.html'
+// Объявление основных функций
+const showMessage = (message, isError = false) => {
+    const messageElement = document.getElementById('login-message');
+    messageElement.textContent = message;
+    messageElement.style.color = isError ? 'red' : 'green';
+    messageElement.style.display = 'block';
 };
 
-// Функции валидации
-function validateEmail(email) {
-    const emailRegex = /^[a-zA-Z0-9._%+-]{5,}@[a-zA-Z0-9.-]{4,}\.(ru|com|net)$/;
-    return emailRegex.test(email);
-}
-
-function validatePassword(password) {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d\s]{8,}$/;
-    return passwordRegex.test(password);
-}
-
-// Инициализация при загрузке страницы
-document.addEventListener('DOMContentLoaded', function () {
-    const form = document.querySelector('.custom-form');
+const clearMessage = () => {
     const messageElement = document.getElementById('login-message');
-    const submitButton = form.querySelector('button[type="submit"]');
+    messageElement.style.display = 'none';
+    messageElement.textContent = '';
+};
 
-    // Проверка блокировки
-    function checkLockout() {
-        const lockoutEnd = sessionStorage.getItem('lockoutEnd');
-        if (lockoutEnd && Date.now() < parseInt(lockoutEnd)) {
-            const remainingTime = Math.ceil((parseInt(lockoutEnd) - Date.now()) / 1000 / 60);
-            messageElement.textContent = `Слишком много попыток входа. Попробуйте снова через ${remainingTime} минут.`;
-            return true;
+const toggleLoadingState = (isLoading) => {
+    const elements = ['login-submit', 'login-email', 'login-password', 'remember-me'];
+    elements.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.disabled = isLoading;
+            if (id === 'login-submit') {
+                element.innerHTML = isLoading ? '<span class="spinner"></span> Вход...' : 'Войти';
+            }
         }
-        return false;
-    }
+    });
+};
 
-    // Обработка неудачного входа
-    function handleLoginFailure() {
-        const attempts = parseInt(sessionStorage.getItem('loginAttempts') || '0') + 1;
-        sessionStorage.setItem('loginAttempts', attempts.toString());
+const handleNetworkError = (error) => {
+    console.error('Network error:', error);
+    showMessage('Проблема с подключением к серверу. Проверьте интернет-соединение.', true);
+};
+
+// Основной обработчик загрузки страницы
+document.addEventListener('DOMContentLoaded', () => {
+    // Получение элементов формы
+    const loginForm = document.getElementById('login-form');
+    const emailInput = document.getElementById('login-email');
+    const passwordInput = document.getElementById('login-password');
+    const rememberMeCheckbox = document.getElementById('remember-me');
+    const passwordToggle = document.getElementById('toggle-password');
+
+    // Обработчик переключения видимости пароля
+    if (passwordToggle) {
+        passwordToggle.addEventListener('click', () => {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            passwordToggle.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
+        });
+    }
+	    // Валидация email в реальном времени
+    emailInput?.addEventListener('input', () => {
+        const email = emailInput.value.trim();
+        const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        emailInput.style.borderColor = email ? (isValid ? 'green' : 'red') : '#ccc';
+    });
+
+    // Валидация пароля в реальном времени
+    passwordInput?.addEventListener('input', () => {
+        const password = passwordInput.value;
+        const isValid = authManager.validatePassword(password);
+        passwordInput.style.borderColor = password ? (isValid ? 'green' : 'red') : '#ccc';
+    });
+
+    // Функции для работы с email
+    const saveLastUsedEmail = (email) => {
+        if (rememberMeCheckbox.checked) {
+            localStorage.setItem('lastUsedEmail', email);
+        } else {
+            localStorage.removeItem('lastUsedEmail');
+        }
+    };
+
+    const restoreLastUsedEmail = () => {
+        const savedEmail = localStorage.getItem('lastUsedEmail');
+        if (savedEmail && emailInput) {
+            emailInput.value = savedEmail;
+            rememberMeCheckbox.checked = true;
+        }
+    };
+
+    // Таймер неактивности
+    const resetInactivityTimer = () => {
+        if (window.inactivityTimeout) {
+            clearTimeout(window.inactivityTimeout);
+        }
+        window.inactivityTimeout = setTimeout(() => {
+            if (authManager.isAuthenticated()) {
+                authManager.logout();
+                showMessage('Сессия завершена из-за неактивности', true);
+            }
+        }, 30 * 60 * 1000); // 30 минут
+    };
+
+    // Отслеживание активности пользователя
+    ['mousedown', 'keydown', 'scroll', 'touchstart'].forEach(eventType => {
+        document.addEventListener(eventType, resetInactivityTimer);
+    });
+
+    // Валидация полей
+    const getValidationErrors = (email, password) => {
+        const errors = [];
         
-        if (attempts >= MAX_LOGIN_ATTEMPTS) {
-            const lockoutEndTime = Date.now() + LOCKOUT_TIME;
-            sessionStorage.setItem('lockoutEnd', lockoutEndTime.toString());
+        if (!email) {
+            errors.push('Email обязателен');
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            errors.push('Некорректный формат email');
         }
-    }
 
-    // Обработка формы входа
-    form.addEventListener('submit', async function (e) {
+        if (!password) {
+            errors.push('Пароль обязателен');
+        } else if (!authManager.validatePassword(password)) {
+            errors.push('Пароль должен содержать минимум 8 символов, включая заглавные и строчные буквы, цифры и специальные символы');
+        }
+
+        return errors;
+    };
+	    // Обработка формы входа
+    loginForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
+        clearMessage();
 
-        if (checkLockout()) return;
+        const email = emailInput?.value.trim();
+        const password = passwordInput?.value;
+        const remember = rememberMeCheckbox?.checked || false;
 
-        const email = document.getElementById('login-email').value.trim();
-        const password = document.getElementById('login-password').value.trim();
-
-        // Валидация полей
-        if (!validateEmail(email)) {
-            messageElement.textContent = "Введите корректный email";
-            messageElement.style.color = 'red';
-            return;
-        }
-
-        if (!validatePassword(password)) {
-            messageElement.textContent = "Некорректный формат пароля";
-            messageElement.style.color = 'red';
+        // Проверка валидации
+        const errors = getValidationErrors(email, password);
+        if (errors.length > 0) {
+            showMessage(errors.join('\n'), true);
             return;
         }
 
         try {
-            submitButton.disabled = true;
-            
+            toggleLoadingState(true);
+
+            // Проверка ограничений на попытки входа
+            await authManager.canAttemptLogin(email);
+
             // Попытка входа
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email,
-                password
-            });
+            const result = await authManager.login(email, password, remember);
 
-            if (error) throw error;
+            if (!result.success) {
+                await authManager.handleFailedLogin(email);
+                throw new Error(result.error || 'Ошибка входа');
+            }
 
-            // Успешный вход
-            sessionStorage.setItem('loginAttempts', '0');
-            messageElement.textContent = 'Успешная авторизация!';
-            messageElement.style.color = 'green';
-
-            // Обработка редиректа
-            const redirectIntent = localStorage.getItem('redirectPage');
-            const targetPage = ALLOWED_REDIRECTS[redirectIntent] || 'index.html';
-            localStorage.removeItem('redirectPage');
-
-            // Редирект после успешного входа
+            // Обработка успешного входа
+            saveLastUsedEmail(email);
+            await updateSecurityMetrics(email, true);
+            showMessage('Вход выполнен успешно!');
+            
+            // Задержка перед редиректом
             setTimeout(() => {
-                window.location.href = targetPage;
-            }, 1000);
+                window.location.href = 'dashboard.html';
+            }, 1500);
 
         } catch (error) {
-            console.error('Login error:', error.message);
-            handleLoginFailure();
-            showErrorMessage();
-            messageElement.textContent = 'Неверный email или пароль';
-            messageElement.style.color = 'red';
+            await updateSecurityMetrics(email, false);
+            if (error.name === 'NetworkError' || !navigator.onLine) {
+                handleNetworkError(error);
+            } else {
+                showMessage(error.message, true);
+            }
         } finally {
-            submitButton.disabled = false;
+            toggleLoadingState(false);
         }
     });
 
-    // Валидация полей в реальном времени
-    form.addEventListener('input', function () {
-        const email = document.getElementById('login-email').value.trim();
-        const password = document.getElementById('login-password').value.trim();
+    // Метрики безопасности
+    const updateSecurityMetrics = async (email, success) => {
+        try {
+            const metrics = JSON.parse(localStorage.getItem('security_metrics') || '{}');
+            const today = new Date().toISOString().split('T')[0];
+            
+            if (!metrics[today]) {
+                metrics[today] = { attempts: 0, successes: 0, failures: 0 };
+            }
+
+            metrics[today].attempts++;
+            if (success) {
+                metrics[today].successes++;
+            } else {
+                metrics[today].failures++;
+            }
+
+            localStorage.setItem('security_metrics', JSON.stringify(metrics));
+        } catch (error) {
+            console.error('Error updating security metrics:', error);
+        }
+    };
+
+    // Инициализация страницы
+    const initializePage = () => {
+        restoreLastUsedEmail();
+        resetInactivityTimer();
         
-        const emailValid = validateEmail(email);
-        const passwordValid = validatePassword(password);
-        
-        // Визуальная обратная связь
-        document.getElementById('login-email').style.borderColor = emailValid ? 'green' : '#ccc';
-        document.getElementById('login-password').style.borderColor = passwordValid ? 'green' : '#ccc';
-        
-        // Активация/деактивация кнопки
-        submitButton.disabled = !(emailValid && passwordValid);
-        
-        // Сброс сообщения об ошибке при вводе
-        if (emailValid && passwordValid) {
-            messageElement.textContent = '';
+        // Проверка предыдущей сессии
+        if (authManager.isAuthenticated()) {
+            window.location.href = 'dashboard.html';
+            return;
+        }
+
+        // Проверка параметров URL для сообщений
+        const urlParams = new URLSearchParams(window.location.search);
+        const message = urlParams.get('message');
+        if (message) {
+            showMessage(decodeURIComponent(message), 
+                       urlParams.get('error') === 'true');
+        }
+    };
+
+    // Инициализация всех обработчиков и настроек
+    initializePage();
+
+    // Очистка при выходе со страницы
+    window.addEventListener('beforeunload', () => {
+        if (window.inactivityTimeout) {
+            clearTimeout(window.inactivityTimeout);
         }
     });
 });
+
+	
