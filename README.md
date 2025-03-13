@@ -233,7 +233,12 @@ Username: testuser
 
 
 
-
+| email            | username | plan    | status  | start_date                    | end_date                      |
+| ---------------- | -------- | ------- | ------- | ----------------------------- | ----------------------------- |
+| test@example.com | testuser | basic   | expired | 2025-03-12 17:09:06.573923+00 | 2025-04-11 17:09:06.573923+00 |
+| test@example.com | testuser | premium | expired | 2025-03-12 17:21:09+00        | 2025-06-12 17:21:09+00        |
+| test@example.com | testuser | premium | active  | 2025-03-12 17:26:06+00        | 2025-06-12 17:26:06+00        |
+| test@example.com | testuser | basic   | active  | 2025-03-13 10:56:42.696063+00 | 2025-04-12 10:56:42.696063+00 |
 
 
 
