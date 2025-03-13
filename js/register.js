@@ -1,8 +1,16 @@
+
 // Константы и настройки
 const PASSWORD_MIN_LENGTH = 8;
 const USERNAME_MIN_LENGTH = 3;
 const REGISTRATION_COOLDOWN = 24 * 60 * 60 * 1000; // 24 часа в миллисекундах
 const MAX_REGISTRATION_ATTEMPTS = 5;
+
+const { createClient } = supabase;
+
+const supabaseUrl = 'https://dsvaqphuagrnkjmthtet.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzdmFxcGh1YWdybmtqbXRodGV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDExNjUwMTQsImV4cCI6MjA1Njc0MTAxNH0.7p5J2VlCie9lWoUrm1YkMdSeEkRadB4b7vROMlPexsY';
+
+const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
 // Функции валидации
 function validateEmail(email) {
@@ -382,5 +390,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
 
 			
