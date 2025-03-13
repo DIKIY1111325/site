@@ -200,15 +200,54 @@ Supabase JS SDK
 Всплывающие уведомления
 Интерактивные формы
 
-
+чат который помогал:
 https://github.com/copilot/share/c232108c-0044-8824-b012-dc40e0a801be
 
+ПРОЕКТ В SUPABASE.CO
+
+РАБОТА ПО НАСТРОЙКИ Supabase в файле Supabase.txt
+
+Project name DIKIY1111325's 
+Project ID dsvaqphuagrnkjmthtet
+Project URL https://dsvaqphuagrnkjmthtet.supabase.co
+
+anon public:
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzdmFxcGh1YWdybmtqbXRodGV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDExNjUwMTQsImV4cCI6MjA1Njc0MTAxNH0.7p5J2VlCie9lWoUrm1YkMdSeEkRadB4b7vROMlPexsY
+
+
+
+тестовый аккаунт Supabase:
+
+Email: test@example.com
+Password: Admin123Test
+Username: testuser
+
+| id                                   | email            | created_at             |
+| ------------------------------------ | ---------------- | ---------------------- |
+| 5e94dd9f-fe8b-4fec-9e09-afe9e2afb1ee | test@example.com | 2025-03-12 18:06:53+00 |
+
+
+скриншоты для анализа работы Supabase в в файлах Supabase.jpg, Supabase1303.jpg
 
 
 
 
 
-рекомендации по работе с API
+
+
+
+
+
+
+
+
+
+ИНФА ДЛЯ ИНТЕГРАЦИИ ПО АПИ
+
+
+
+рекомендации по работе с API (еще не приступали к работе по вкл.чению)
 
 
 Copilot said
@@ -286,14 +325,5 @@ Copilot said
 
 Мониторинг и логирование: Ведите мониторинг и логирование всех запросов к API, чтобы выявлять неэффективные или избыточные запросы. Это поможет вам оптимизировать их и уменьшить нагрузку.
 
-Если вам нужна дополнительная информация или помощь в оптимизации запросов, дайте знать!
-
-
-
-
-
-
-
-Message Copilot
 
 
