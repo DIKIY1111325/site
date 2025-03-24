@@ -11,7 +11,7 @@ const showMessage = (message, isError = false) => {
 };
 
 // Инициализация Supabase клиента
-const supabaseUrl = 'https://aws-0-ap-south-1.pooler.supabase.com:6543';  // Хост и порт
+const supabaseUrl = 'https://aws-0-ap-south-1.pooler.supabase.com:5432';  // Хост и порт
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzdmFxcGh1YWdybmtqbXRodGV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDExNjUwMTQsImV4cCI6MjA1Njc0MTAxNH0.7p5J2VlCie9lWoUrm1YkMdSeEkRadB4b7vROMlPexsY';
 const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
@@ -20,6 +20,7 @@ const clearMessage = () => {
     messageElement.style.display = 'none';
     messageElement.textContent = '';
 };
+
 const { createClient } = supabase;
 
 const supabaseUrl = 'https://dsvaqphuagrnkjmthtet.supabase.co';
