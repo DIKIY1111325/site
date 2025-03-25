@@ -1,8 +1,8 @@
-// Подключение Supabase
-const SUPABASE_URL = https://xqlsfatnvjicffaxhvam.supabase.co;
-const SUPABASE_ANON_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhxbHNmYXRudmppY2ZmYXhodmFtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI4MDEzODgsImV4cCI6MjA1ODM3NzM4OH0.iwN2H48Z3k8BFACZgLyncVvtRSy0WHqvfVsWbK9dfSw
-;
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Настройки анти-спама и защиты
+const REGISTRATION_COOLDOWN = 24 * 60 * 60 * 1000; // 24 часа
+const MAX_REGISTRATION_ATTEMPTS = 5;
+const BRUTEFORCE_LOCK_TIME = 30 * 60 * 1000; // 30 минут
+const MAX_FAILED_ATTEMPTS = 3;
 
 // Функции валидации email и пароля
 function validateEmail(email) {
@@ -15,24 +15,84 @@ function validatePassword(password) {
     return passwordRegex.test(password);
 }
 
-// Проверка, есть ли такой email в базе
-async function checkEmailAvailability(email) {
-    const { data, error } = await supabase
-        .from("profiles")
-        .select("email")
-        .eq("email", email)
-        .single();
+// Проверка блокировки регистрации (anti-spam)
+function checkRegistrationCooldown() {
+    const attempts = parseInt(localStorage.getItem("registrationAttempts") || "0");
 
-    if (error) {
-        if (error.code === "PGRST116") {
-            return true; // Email свободен
-        }
-        console.error("Ошибка при проверке email:", error.message);
-        return false;
+    if (attempts >= MAX_REGISTRATION_ATTEMPTS) {
+        return "Превышено количество попыток регистрации.";
     }
 
-    return !data; // Если данные найдены, email занят
+    const lastRegistration = localStorage.getItem("lastRegistrationAttempt");
+    if (lastRegistration) {
+        const timePassed = Date.now() - parseInt(lastRegistration);
+        if (timePassed < REGISTRATION_COOLDOWN) {
+            const hoursLeft = Math.ceil((REGISTRATION_COOLDOWN - timePassed) / (1000 * 60 * 60));
+            return `Повторная регистрация доступна через ${hoursLeft} ч.`;
+        }
+    }
+    return null;
 }
+
+// Обновление попыток регистрации
+function updateRegistrationAttempts() {
+    const attempts = parseInt(localStorage.getItem("registrationAttempts") || "0") + 1;
+    localStorage.setItem("registrationAttempts", attempts.toString());
+}
+
+// Проверка защиты от брутфорса
+function checkBruteforceLock() {
+    const failedAttempts = parseInt(localStorage.getItem("failedRegistrationAttempts") || "0");
+
+    if (failedAttempts >= MAX_FAILED_ATTEMPTS) {
+        const lockTime = parseInt(localStorage.getItem("registrationLockTime") || "0");
+        const timeLeft = BRUTEFORCE_LOCK_TIME - (Date.now() - lockTime);
+
+        if (timeLeft > 0) {
+            const minutesLeft = Math.ceil(timeLeft / (1000 * 60));
+            return `Слишком много неудачных попыток. Попробуйте через ${minutesLeft} мин.`;
+        } else {
+            localStorage.removeItem("failedRegistrationAttempts");
+            localStorage.removeItem("registrationLockTime");
+        }
+    }
+    return null;
+}
+
+// Обновление неудачных попыток
+function updateFailedAttempts() {
+    const attempts = parseInt(localStorage.getItem("failedRegistrationAttempts") || "0") + 1;
+    localStorage.setItem("failedRegistrationAttempts", attempts.toString());
+
+    if (attempts >= MAX_FAILED_ATTEMPTS) {
+        localStorage.setItem("registrationLockTime", Date.now().toString());
+    }
+}
+
+// Отправка email через серверless-функцию
+async function sendEmail(email) {
+    try {
+        const response = await fetch("https://xqlsfatnvjicffaxhvam.supabase.co/functions/v1/send-email", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: email })
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            console.log("Email отправлен:", result);
+            return true;
+        } else {
+            console.error("Ошибка при отправке email:", result);
+            return false;
+        }
+    } catch (error) {
+        console.error("Ошибка сети при отправке email:", error);
+        return false;
+    }
+}
+
+// Обработчик регистрации
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("register-form");
     const messageElement = document.getElementById("register-message");
@@ -73,25 +133,34 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
+        // Проверка на брутфорс и частые регистрации
+        let cooldownMessage = checkRegistrationCooldown() || checkBruteforceLock();
+        if (cooldownMessage) {
+            messageElement.textContent = cooldownMessage;
+            messageElement.style.color = "red";
+            return;
+        }
+
         try {
-            messageElement.textContent = "Проверка email...";
+            messageElement.textContent = "Создание аккаунта...";
             messageElement.style.color = "blue";
 
-            const isEmailAvailable = await checkEmailAvailability(email);
-            if (!isEmailAvailable) {
-                messageElement.textContent = "Этот email уже зарегистрирован.";
-                messageElement.style.color = "red";
-                return;
-            }
-
-            messageElement.textContent = "Создание аккаунта...";
-            const { data, error } = await supabase.auth.signUp({
-                email,
-                password
+            // Запрос на регистрацию через серверless-функцию
+            const response = await fetch("https://xqlsfatnvjicffaxhvam.supabase.co/functions/v1/send-email", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: email })
             });
 
-            if (error) throw error;
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.error || "Ошибка регистрации");
 
+            // Отправка email
+            const emailSent = await sendEmail(email);
+            if (!emailSent) throw new Error("Ошибка при отправке email");
+
+            // Успешная регистрация
+            localStorage.setItem("lastRegistrationAttempt", Date.now().toString());
             messageElement.textContent = "Регистрация успешна! Проверьте email.";
             messageElement.style.color = "green";
 
@@ -101,74 +170,9 @@ document.addEventListener("DOMContentLoaded", function () {
             }, 3000);
         } catch (error) {
             console.error("Ошибка регистрации:", error.message);
+            updateFailedAttempts();
             messageElement.textContent = "Ошибка при регистрации. Попробуйте позже.";
             messageElement.style.color = "red";
         }
     });
 });
-const REGISTRATION_COOLDOWN = 24 * 60 * 60 * 1000; // 24 часа в миллисекундах
-const MAX_REGISTRATION_ATTEMPTS = 5;
-
-// Проверка времени последней регистрации
-function checkRegistrationCooldown() {
-    const attempts = parseInt(localStorage.getItem("registrationAttempts") || "0");
-
-    if (attempts >= MAX_REGISTRATION_ATTEMPTS) {
-        messageElement.textContent = "Превышено количество попыток регистрации.";
-        messageElement.style.color = "red";
-        return true;
-    }
-
-    const lastRegistration = localStorage.getItem("lastRegistrationAttempt");
-    if (lastRegistration) {
-        const timePassed = Date.now() - parseInt(lastRegistration);
-        if (timePassed < REGISTRATION_COOLDOWN) {
-            const hoursLeft = Math.ceil((REGISTRATION_COOLDOWN - timePassed) / (1000 * 60 * 60));
-            messageElement.textContent = `Повторная регистрация доступна через ${hoursLeft} ч.`;
-            messageElement.style.color = "red";
-            return true;
-        }
-    }
-    return false;
-}
-
-// Обновление попыток регистрации
-function updateRegistrationAttempts() {
-    const attempts = parseInt(localStorage.getItem("registrationAttempts") || "0") + 1;
-    localStorage.setItem("registrationAttempts", attempts.toString());
-}
-
-const BRUTEFORCE_LOCK_TIME = 30 * 60 * 1000; // 30 минут в миллисекундах
-const MAX_FAILED_ATTEMPTS = 3;
-
-function checkBruteforceLock() {
-    const failedAttempts = parseInt(localStorage.getItem("failedRegistrationAttempts") || "0");
-
-    if (failedAttempts >= MAX_FAILED_ATTEMPTS) {
-        const lockTime = parseInt(localStorage.getItem("registrationLockTime") || "0");
-        const timeLeft = BRUTEFORCE_LOCK_TIME - (Date.now() - lockTime);
-
-        if (timeLeft > 0) {
-            const minutesLeft = Math.ceil(timeLeft / (1000 * 60));
-            messageElement.textContent = `Слишком много неудачных попыток. Попробуйте через ${minutesLeft} мин.`;
-            messageElement.style.color = "red";
-            return true;
-        } else {
-            // Сброс блокировки после времени ожидания
-            localStorage.removeItem("failedRegistrationAttempts");
-            localStorage.removeItem("registrationLockTime");
-        }
-    }
-    return false;
-}
-
-function updateFailedAttempts() {
-    const attempts = parseInt(localStorage.getItem("failedRegistrationAttempts") || "0") + 1;
-    localStorage.setItem("failedRegistrationAttempts", attempts.toString());
-
-    if (attempts >= MAX_FAILED_ATTEMPTS) {
-        localStorage.setItem("registrationLockTime", Date.now().toString());
-    }
-}
-
-
